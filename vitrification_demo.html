@@ -1,0 +1,80 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <meta charset = "utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="css/reset-min.css">
+    <link rel="stylesheet" type="text/css" href="css/seeui.css">
+    <style type="text/css">
+        .send{
+            width: 650px;
+            height: 350px;
+            margin: 0 auto;
+            border: 1px solid #000;
+            margin-top:20px;
+        }
+        .slid{
+            width: 450px;
+            height: 250px;
+            margin: 0 auto;
+            border: 1px solid #000;
+            margin-top:20px;
+            float:left
+        }
+    </style>
+    <script type="text/javascript" src="libs/jquery.js"></script>
+    <script type="text/javascript" src="libs/seeui.js"></script>
+    <script type="text/javascript" src="libs/plug/seeui.vitrification.js"></script>
+    <script type="text/javascript">
+        (function($){
+            var _s = seeui;
+            var _url = seeui.getURL();
+            $(function(){
+                //1 id send
+                var h = seeui.vitrification('send',{
+                    autoPlay:true,
+                    Message:[
+                        ['燃烧的远征','#'],
+                        ['巫妖王之怒','#'],
+                        ['大灾变','#'],
+                        ['达拉赞崛起','#']
+                    ]
+                });
+                // seeui.com.getSrv({
+                //     url:_url+'/data/vitrification.js',
+                //     callback:function(data){
+                //         console.log(data);
+                //     }
+                // })
+                //console.log(_url);
+                //2 id slide
+                // $.getJSON(_url+'/data/vitrification.js',function(data){
+                //     //console.log(data);
+                //     var value = data.value;
+                //     var message = data.message;
+                //     var g = seeui.vitrification('slide',{
+                //         createDate:value,
+                //         Message:message
+                //     });
+                // });
+                
+            });
+        })(jQuery)
+    </script>
+</head>
+<body style="position:relative;width:100%;height:600px;">
+    <div id="send" class="send">
+        <ul>
+            <li><img src="img/black-temple-large.jpg"></li>
+            <li><img src="img/fall-of-the-lich-king-large.jpg"></li>
+            <li><img src="img/hour-of-twilight-large.jpg"></li>
+            <li><img src="img/zandalari-large.jpg"></li>
+        </ul>
+        <div></div>
+        <div></div>
+    </div>
+
+    <!-- <div id="slide" class="slid"></div> -->
+</body>
+</html>
