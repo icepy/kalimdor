@@ -121,3 +121,38 @@ ul{
     background: #215c94;
     color: #fff;
 }
+/*tree*/
+.tree_all li{
+    margin: 5px 0;
+}
+.tree_all .data-ch{
+    color: #fff;
+    background: #d84f2b;
+    display: block;
+    cursor: pointer;
+    height: 25px;
+    line-height: 25px;
+    font-size: 12px;
+    padding-left: 5px;
+}
+.tree_all a{
+    color: #444;
+    font-size: 14px;
+}
+.tree_all .data-ch a{
+    color: #fff;
+    font-size: 12px;
+    display: block;
+}
+.tree_all .data-ch a:hover{
+    color: #fff;
+}
+.tree_all a:hover{
+    color: #d84f2b;
+}
+.tree_all .data-zh{
+    font-size: 12px;
+    border-bottom:1px dashed #d84f2b;
+    display: block;
+    cursor: pointer;
+}

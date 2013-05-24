@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<!-- Always force latest IE rendering engine (even in intranet) & Chrome Frame
+		Remove this if you use the .htaccess -->
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+		<title></title>
+		<meta name="viewport" content="width=device-width; initial-scale=1.0" />
+		<!-- Replace favicon.ico & apple-touch-icon.png in the root of your domain and delete these references -->
+		<link rel="shortcut icon" href="/favicon.ico" />
+		<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+		<link rel="stylesheet" type="text/css" href="css/reset-min.css" />
+		<link rel="stylesheet" type="text/css" href="css/seeui.css">
+		<style type="text/css">
+			.d a{
+				color: #D84F2B;
+			}
+		</style>
+		<script type="text/javascript" src="libs/jquery.js"></script>
+		<script type="text/javascript" src="libs/seeui.js"></script>
+		<script type="text/javascript" src="libs/plug/seeui.tree.js"></script>
+		<script type="text/javascript">
+			(function($){
+				var _s = seeui;
+				$(function(){
+					var _tree = seeui.tree('my_tree',{
+		                overClickEvent:function(e){
+		                	console.log(this);
+		                },
+		                data:[
+		                        {"id":1,"pid":0,"text":"我的游戏","cr":true},
+		                        {"id":2,"pid":1,"text":"魔兽世界"},
+
+		                        {"id":3,"pid":0,"text":"我的游戏时间","cr":true},
+		                        {"id":4,"pid":3,"text":"4500分钟"},
+
+		                        {"id":5,"pid":0,"text":"我的任务","cr":true},
+		                        {"id":6,"pid":5,"text":"未完成任务"},
+		                        {"id":7,"pid":5,"text":"已完成任务"},
+
+
+		                        {"id":8,"pid":0,"text":"拍卖行分析","cr":true},
+		                        {"id":9,"pid":8,"text":"金币查询"},
+
+
+		                        {"id":10,"pid":0,"text":"副本设置","cr":true},
+
+		                        {"id":11,"pid":10,"text":"个人副本提醒"},
+		                        {"id":12,"pid":10,"text":"即将到来的副本","cr":true},
+
+		                            {"id":13,"pid":12,"text":"熔火之心"},
+		                            {"id":14,"pid":12,"text":"我想去的副本","cr":true},
+		                                {"id":15,"pid":14,"text":"安其拉战役"},
+		                                {"id":16,"pid":14,"text":"黑翼之巢"},
+		                                {"id":17,"pid":14,"text":"黑石山"},
+		                                {"id":18,"pid":14,"text":"祖尔格拉布神庙"},
+		                                {"id":19,"pid":14,"text":"瑟银兄弟会"}
+		                ],
+		                autoOpen:false
+					});
+
+					var _tree = seeui.tree('you_tree',{
+						overClickEvent:function(e){
+		                	console.log(this);
+		                },
+		                data:'url:data/tree.js'
+					});
+
+				});
+			})(jQuery);
+		</script>
+	</head>
+	<body>
+		<div style="width:160px;float:left;margin-right:20px;">
+			<div id="my_tree"></div>
+		</div>
+		
+		<div style="width:160px;float:left;">
+			<div id="you_tree"></div>
+		</div>
+		
+	</body>
+</html>
