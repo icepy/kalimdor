@@ -1,5 +1,5 @@
 /*
-*	搜索自定义选择
+*	tree
 */
 seeui.addplug('tree',function(g,d,o){
 	var $d = $('#'+d);
@@ -31,7 +31,7 @@ seeui.addplug('tree',function(g,d,o){
             url:_url,
             callback:function(data){
                 var _value = data.value;
-                console.log(_value);
+                //console.log(_value);
                 _init._create_tree(_value);
             }
         });
@@ -56,7 +56,7 @@ seeui.addplug('tree',function(g,d,o){
 			__c.isArray(_config.data) ? v(): _v();
 		},
 		_create_tree:function(data){
-			console.log(data);
+			//console.log(data);
 			var str = '';
 			$.each(data,function(_i,_v){
 	            var _p = _v.pid,
@@ -90,7 +90,7 @@ seeui.addplug('tree',function(g,d,o){
             	_c !== undefined ? _all_str += '<li id="tree_'+_id+'_'+d+'"><span id="parent_'+_id+'_'+d+'" data-children="'+_c+'" class="data-zh">'+_t+'</span><ul id="children_'+_id+'_'+d+'" n="'+_attr_show+'" style="margin-left:'+mar+'px;'+_show+'">'+_get_children(data,_id,mar+5)+'</ul></li>' : _all_str += '<li id="tree_'+_id+'_'+d+'"><a href="#" class="all_b">'+_t+'</a></li>';
             }
         });
-        console.log(_all_str);
+        //console.log(_all_str);
         return _all_str;
     },
     //事件返回
