@@ -12,7 +12,8 @@ seeui为全局，调用相应的组件类，传入id，与自定义配置对象,
 
 如：
 seeui.xxx('ss',{
-  autoOpen:true
+  autoOpen:true，
+  
   onClick:function(e){
     
   }
