@@ -2,8 +2,38 @@
 *	基于jquery的一套ui组件，metro风格
 */
 (function(window,undefined){
+	var document = window.document,
+    navigator = window.navigator;
+    if(window.seeui) return;
 	if(!window.seeui){
-		window.seeui = {};
+		window.seeui = (function(){
+			var pathInfo = {
+				version: '1.0',
+	            status: 'unloaded',
+	            LibsLoaded: [],
+	            curload: null,
+	            LibsPATH: "libs",
+	            basePath:(function(){
+	            	var BasePATH = window.SEEUI|| '';
+	                if (!BasePATH) {
+	                    var jstag = document.getElementsByTagName('script');
+	                    for (var snum = 0; snum < jstag.length; snum++) {
+	                        var srcMatch = jstag[snum].src.match(/(^|.*[\\\/])seeui(?:_basic)?.js(?:\?.*)?$/i); //?(?:_source)
+	                        if (srcMatch) {
+	                            BaseFrameSrc = srcMatch[0];
+	                            BasePATH = srcMatch[1];
+	                            break;
+	                        }
+	                    }
+	                }
+	                if (BasePATH.indexOf(':/') == -1) if (BasePATH.indexOf('/') === 0) BasePATH = location.href.match(/^.*?:\/\/[^\/]*/)[0] + BasePATH;
+	                else BasePATH = location.href.match(/^[^\?]*\/(?:)/)[0] + BasePATH;
+	                if (!BasePATH) throw 'seeui 框架路径检测失败.';
+	                return BasePATH;
+	            })()
+			}
+			return pathInfo;
+		})();
 	}
 	//添加ui组件
 	seeui.addplug = function(namespace,callback){
