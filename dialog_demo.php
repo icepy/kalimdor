@@ -14,14 +14,11 @@
 			.d a{
 				color: #D84F2B;
 			}
-		</style>
-		
+		</style>	
 		<script type="text/javascript" src="libs/seeui.js"></script>
-		<?php 
-			echo "<div id='controllers' ctrl='controllers' style='display:none;'></div>";
-		?>
 	</head>
 	<body>
+		<div id='controllers' ctrl='controllers' style='display:none;'></div>
 		<div class="d">
 			<a href="#" id="a">点击对话框1</a>
 		</div>
