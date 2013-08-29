@@ -1,0 +1,3 @@
+seeui.config = {
+	UI:['dialog']
+}

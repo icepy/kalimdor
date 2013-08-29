@@ -1,7 +1,7 @@
 /*
 *	tree
 */
-seeui.addplug('tree',function(g,d,o){
+seeui.comm.addplug('tree',function(g,d,o){
 	var $d = $('#'+d);
 	var _seeui = seeui;
 	var __c = seeui.com;

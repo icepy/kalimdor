@@ -1,5 +1,5 @@
 /*
-*	基于jquery的一套ui组件，metro风格
+*	MVC  基于jQuery的一套UI组件  metro风格 {还未完成。}
 */
 (function(window,undefined){
 	var document = window.document,
@@ -7,21 +7,22 @@
     if(window.seeui) return;
 	if(!window.seeui){
 		window.seeui = (function(){
-			var pathInfo = {
+			var BeLibsName  = null,
+				LibsLoaded = null;
+			var pathinfo = {
 				version: '1.0',
-	            status: 'unloaded',
-	            LibsLoaded: [],
-	            curload: null,
-	            LibsPATH: "libs",
-	            basePath:(function(){
-	            	var BasePATH = window.SEEUI|| '';
+	            LibsPATH: 'libs',
+	            basePath: (function () {
+	                var BasePATH = window.SEEUI|| '';
 	                if (!BasePATH) {
 	                    var jstag = document.getElementsByTagName('script');
 	                    for (var snum = 0; snum < jstag.length; snum++) {
 	                        var srcMatch = jstag[snum].src.match(/(^|.*[\\\/])seeui(?:_basic)?.js(?:\?.*)?$/i); //?(?:_source)
-	                        if (srcMatch) {
-	                            BaseFrameSrc = srcMatch[0];
+	                        var funMatch = jstag[snum].src.split('?');
+	                        if (srcMatch && funMatch) {
+	                            BeLibsName = srcMatch[0];
 	                            BasePATH = srcMatch[1];
+	                            LibsLoaded = funMatch[1];
 	                            break;
 	                        }
 	                    }
@@ -32,119 +33,203 @@
 	                return BasePATH;
 	            })()
 			}
-			return pathInfo;
+			return pathinfo;
 		})();
 	}
-	//添加ui组件
-	seeui.addplug = function(namespace,callback){
-		seeui[namespace] = function(d,o){
-			return new callback(g,d,o);
-		}
-	}
-	//获取根地址
-	seeui.getURL = function(){
-			var loc = document.location.href;
-			var _url = loc.substring(0,loc.lastIndexOf('/'));
-			return _url;
-	}
-	//获取head元素
-	seeui.getHead = function () {
+	var _seeui = seeui;
+	//UI类
+	_seeui.otherOption = function(){
+    	this.addplug = function(namespace,callback){
+    		seeui[namespace] = function(d,o){
+				return new callback(d,o);
+			}
+    	}
+    }
+    //控制器类
+    _seeui.otherCtrl = function(){
+    	var self = this;
+    	this.GATHERCTRL = {};  //从控制器中采集信息
+    	this.add = function(filename,fun){
+    		self.GATHERCTRL = new fun();
+    		$(function(){
+    			self.GATHERCTRL.init();
+    		});
+    	}
+    	this.HandleControllers = function(){
+
+    	}
+    }
+    //模型类
+    _seeui.otherModel = function(){
+    	this.GATHERMODEL = {};
+    	this.add = function(filename,fun){
+    		self.GATHERMODEL = new fun();
+    	}
+    	this.HandleModel = function(){
+
+    	}
+    }
+    //视图类
+    _seeui.otherView = function(){
+    	this.GATHERVIEW = {};
+    	this.add = function(filename,fun){
+    		self.GATHERVIEW = new fun();
+    	}
+    	this.HandleView = function(){
+
+    	}
+    }
+
+	_seeui.getHead = function () {
         var h = document.getElementsByTagName('head')[0];
         if (!h) h = document.getDocumentElement().append('head');
         return h
     }
-    //脚本加载
-	seeui.scriptLoad = (function(){
-		var j = {},
-        k = {};
+    //动态脚本加载
+	_seeui.LoadFile = (function(){
+		var Head = _seeui.getHead();
+        var script = document.createElement('script');
+        script.type = 'text/javascript';
+        script.src = _seeui.basePath+'LAB.min.js';
+        /*
+		script.onreadystatechange = function () {
+            if (script.readyState == 'loaded' || script.readyState == 'complete') {
+                script.onreadystatechange = null;
+                v(y, true);
+            }
+        }
+        */
+        Head.appendChild(script);
         return {
-            LABJSReady: false,
-            load: function (url, callback, n, o) {
-                var purl = typeof url == 'string';
-                if (purl) url = [url];
-                if (!n) n = seeui;
+			loadinit:function(arr,fun,c){
+				c.LoadFile.Load_Scr(arr,function(){
+					fun(jQuery,c);
+				});
+				/*
+				var timer;     
+				function LoadedEvent() {     
+				    if (document.loaded) return;     
+				    if (timer) window.clearInterval(timer);     
+				    document.fire("dom:loaded");     
+				    document.loaded = true;     
+				} 
+				if(document.addEventListener && typeof fun === 'function'){
+					document.addEventListener('DOMContentLoaded',fun,false);    
+				}
+				*/
+				/*    
+					其他版本游览器稍后支持
+			  	if (document.addEventListener) {     
+				    if (Prototype.Browser.WebKit) {     
+				      timer = window.setInterval(function() {     
+				        if (/loaded|complete/.test(document.readyState))     
+				          fireContentLoadedEvent();     
+				      }, 0);     
+				      Event.observe(window, "load", fireContentLoadedEvent);     
+				    
+				    }   
+			  	} else {     
+				    document.write("<"+"script id=__onDOMContentLoaded defer src=//:><\/script>");     
+				    $("__onDOMContentLoaded").onreadystatechange = function() {     
+			      	if (this.readyState == "complete") {     
+			        	this.onreadystatechange = null;     
+			        	fireContentLoadedEvent();     
+			      	}     
+			    }
+			    */     
+			},
+			LoadStyle:function(filename){
+				var Head = _seeui.getHead();
+				var fileref = document.createElement("link");
+		        fileref.setAttribute("rel", "stylesheet");
+		        fileref.setAttribute("type", "text/css");
+		        fileref.setAttribute("href", "css/"+filename);
+		        Head.appendChild(fileref);
+			},
+			Load_Scr:function(arr,fun){
+				script.onload = function(){
+					if(arr.length > 0){
+						$LAB.script(arr).wait(function () {
+	                    	fun();
+	                	});
+					}
+				}
+			},
+			LoadScript:function(arr,fun){
+				$LAB.script(arr).wait(function () {
+                	fun();
+            	});
+			}
+        }
+	})();
 
-                var q = url.length,
-            	r = [],
-            	s = [],
-	            t = function (y) {
-	                if (callback) if (purl) callback.call(n, y);
-	                else callback.call(n, r, s);
-	            };
-                if (q === 0) { t(true); return; }
-                var u = function (y, z) {
-                    (z ? r : s).push(y);
-                    if (--q <= 0) {
-                        //o && _sker.document.getDocumentElement().removeStyle('cursor');
-                        t(z);
+	(function(_seeui){
+		var _style = ['reset-min.css','seeui.css'],
+			_script = ['libs/config.js','libs/jquery.js','libs/jquery.tmpl.js'];
+		for(var i = 0,le = _style.length; i < le;i++){
+			_seeui.LoadFile.LoadStyle(_style[i]);
+		}
+		_seeui.LoadFile.loadinit(_script,function($,seeui){
+			seeui.UI = new seeui.otherOption();
+			var libs = seeui.config.UI;
+			var _bs = [];
+			$.each(libs, function(index, val) {
+				_bs.push('libs/plug/seeui.'+val+'.js');
+			});
+			seeui.LoadFile.LoadScript(_bs,function(){
+				seeui.CTRL = new seeui.otherCtrl();
+				seeui.LoadFile.LoadScript(['ctrl/'+$('#controllers').attr('ctrl')+'.js']);
+			});
+		},_seeui);
+	})(_seeui);
+
+    var webCookie = function (name, value, options) {
+        if (typeof value != 'undefined') {
+            options = options || {};
+            if (value === null) {
+                value = '';
+                options = $.extend({}, options);
+                options.expires = -1;
+            }
+            var expires = '';
+            if (options.expires && (typeof options.expires == 'number' || options.expires.toUTCString)) {
+                var date;
+                if (typeof options.expires == 'number') {
+                    date = new Date();
+                    date.setTime(date.getTime() + (options.expires * 60 * 60 * 1000));
+                } else {
+                    date = options.expires;
+                }
+                expires = '; expires=' + date.toUTCString();
+            }
+            var path = options.path ? '; path=' + (options.path) : '';
+            var domain = options.domain ? '; domain=' + (options.domain) : '';
+            var secure = options.secure ? '; secure' : '';
+            document.cookie = [name, '=', encodeURIComponent(value), expires, path, domain, secure].join('');
+        } else {
+            var cookieValue = null;
+            if (document.cookie && document.cookie != '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = jQuery.trim(cookies[i]);
+                    if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
                     }
-                },
-		        v = function (y, z) {
-		            j[y] = 1;
-		            var A = k[y];
-		            delete k[y];
-		            for (var B = 0; B < A.length; B++) A[B](y, z);
-		        },
-		        w = function (y) {
-		            if (j[y]) {
-		                u(y, true);
-		                return;
-		            }
-		            var z = k[y] || (k[y] = []);
-		            z.push(u);
-		            if (z.length > 1) return;
-		            var Head = seeui.getHead();
-		            var script = document.createElement("script");
-		            script.type = "text/javascript";
-		            script.src = y
-
-		            
-		                script.onload = function () {
-		                    //console.log(y+" LOAD");
-		                    setTimeout(function () { v(y, true); }, 0);
-		                };
-		                script.onerror = function () {
-		                    v(y, false);
-		                };
-		            //}
-		            Head.appendChild(script);
-		        };
-                //o && _sker.document.getDocumentElement().setStyle('cursor', 'wait');
-                for (var x = 0; x < q; x++) w(url[x]);
-            },
-            loadByLAB: function (p, callback) {
-                this.LABJSReady = true;
-                if (p === undefined) return;
-                var _jsfiles = [];
-                if (typeof p === "string") {
-                    var _ps = p.split(',');
-                    for (var j = 0; j < _ps.length; j++) {
-                        _jsfiles.push(_ps[j]);
-                    }
-                } else
-                    _jsfiles = p;
-
-                if (_jsfiles.length > 0) {
-                    $LAB.script(_jsfiles).wait(function () {
-                        callback();
-                    });
                 }
             }
-        };
-	})();
-	(function(){
-		var _url = seeui.getURL();
-		seeui.scriptLoad.load([_url+'/libs/LAB.min.js'],function(){
-			//console.log('a');
-		});
-	})();
-	//字符串拼接stringBuffer 类似 StringBuilder
+            return cookieValue;
+        }
+    };
+
+   	//字符串拼接stringBuffer 类似 StringBuilder
     var StringBuffer = function () { this._strs = new Array(); }
     StringBuffer.prototype.append = function (str) { this._strs.push(str); };
     StringBuffer.prototype.ToString = function (str) {
         if (str === undefined) str = "";
         return this._strs.join(str);
     };
+
     seeui.getSrv = function(gather){
 		var ajax = {
 			type: 'GET',
@@ -163,15 +248,7 @@
 		}
 		$.ajax($.extend(ajax,gather));
 	};
-	var count=1;
-	seeui.LoadFile = function(url){
-		if( typeof $LAB === "undefined"){
-			if( count < 5 ){
-				setTimeout(function(){seeui.LoadFile(url)},25);
-				count++;
-			}
-		}else $LAB.script(url);
-	}
+
 	//游览器检测
     seeui.browser = {
         IE: !!(window.attachEvent && navigator.userAgent.indexOf('Opera') === -1),
@@ -183,12 +260,14 @@
         MobileSafari: !!navigator.userAgent.match(/Apple.*Mobile.*Safari/),
         android: navigator.userAgent.indexOf('Android') > -1 || navigator.userAgent.indexOf('Linux') > -1
     }
+
     //正则表达式
 	seeui.reg = {
 		body:/<body[^>]*>([\s\S]*)<\/body>/i,
 		style:/<style[^>]*>([\s\S]*)<\/style>/i,
 		script:/<script\b[^<]*(?:(?!<\/script)<[^>]*)*<\/script>/gi
 	}
+	
 	//公共方法
 	seeui.com = {
 		//设置透明
@@ -237,10 +316,12 @@
 			  }
 			}
 			return -1;
+		},
+		getURL:function(){
+			var loc = document.location.href;
+			var _url = loc.substring(0,loc.lastIndexOf('/'));
+			return _url;
 		}
 	};
-	var g = {};
-	g.keyCode = {
-		ESC:27
-	};
+	console.log(_seeui);
 })(window);

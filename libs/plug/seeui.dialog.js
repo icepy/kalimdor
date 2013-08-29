@@ -1,12 +1,12 @@
 /*
 *	@对话框
 */
-seeui.addplug('dialog',function(g,d,o){
+seeui.UI.addplug('dialog',function(d,o){
 	var $d = $('#'+d);
 	var _C = seeui.com;
 	$d.css({background:'#fff'});
 	var o = o;
-	var g = g;
+	
 	/*
 	*	@config 配置参数
 	*	@autoOpen 是否在初始化时打开
