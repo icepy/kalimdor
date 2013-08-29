@@ -178,7 +178,7 @@
 			});
 			seeui.LoadFile.LoadScript(_bs,function(){
 				seeui.CTRL = new seeui.otherCtrl();
-				seeui.LoadFile.LoadScript(['ctrl/'+$('#controllers').attr('ctrl')+'.js']);
+				seeui.LoadFile.LoadScript(['controllers/'+$('#controllers').attr('ctrl')+'.js']);
 			});
 		},_seeui);
 	})(_seeui);
