@@ -1,5 +1,5 @@
-seeui.CTRL.add('controllers',function(){
-	this.view = "con_view";
+seeui.controllers.add('controllers',function(){
+	this.views = "con_view";
 	this.init = function(){
 		var _s = seeui;
 		if($('#dialog').length == 0){

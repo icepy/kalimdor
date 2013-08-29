@@ -1,7 +1,7 @@
 /*
 *	@对话框
 */
-seeui.UI.addplug('dialog',function(d,o){
+seeui.addplug('dialog',function(d,o){
 	var $d = $('#'+d);
 	var _C = seeui.com;
 	$d.css({background:'#fff'});

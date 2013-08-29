@@ -1,7 +1,7 @@
 /*
 *	@幻灯片,渐隐渐出。
 */
-seeui.UI.addplug('vitrification',function(d,o){
+seeui.addplug('vitrification',function(d,o){
 	var $d = $('#'+d);
 	/*
 	*	@config 配置参数

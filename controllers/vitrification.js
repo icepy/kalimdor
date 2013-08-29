@@ -1,5 +1,5 @@
-seeui.CTRL.add('vitrification',function(){
-	this.view = "con_view";
+seeui.controllers.add('vitrification',function(){
+	this.view = "none";
 	this.init = function(){
 		var _s = seeui;
 		var h = seeui.ui.vitrification('send',{

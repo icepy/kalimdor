@@ -1,3 +1,3 @@
 seeui.config = {
-	UI:['dialog','tree','searchSelect','vitrification']
+	plug:['dialog','tree','searchSelect','vitrification']
 }
