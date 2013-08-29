@@ -1,3 +1,3 @@
 seeui.config = {
-	UI:['dialog']
+	UI:['dialog','tree','searchSelect','vitrification']
 }

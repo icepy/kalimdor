@@ -5,7 +5,7 @@ seeui.CTRL.add('controllers',function(){
 		if($('#dialog').length == 0){
 			$('body').append('<div id="dialog"></div>');
 		}
-		var dialog = seeui.dialog('dialog',{
+		var dialog = seeui.ui.dialog('dialog',{
 			autoOpen:true,
 			width:400,
 			height:80,

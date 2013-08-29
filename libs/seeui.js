@@ -37,10 +37,11 @@
 		})();
 	}
 	var _seeui = seeui;
+	seeui.ui = {};
 	//UI类
 	_seeui.otherOption = function(){
     	this.addplug = function(namespace,callback){
-    		seeui[namespace] = function(d,o){
+    		seeui.ui[namespace] = function(d,o){
 				return new callback(d,o);
 			}
     	}
