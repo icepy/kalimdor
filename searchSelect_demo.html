@@ -10,43 +10,15 @@
 		<!-- Replace favicon.ico & apple-touch-icon.png in the root of your domain and delete these references -->
 		<link rel="shortcut icon" href="/favicon.ico" />
 		<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-		<link rel="stylesheet" type="text/css" href="css/reset-min.css" />
-		<link rel="stylesheet" type="text/css" href="css/seeui.css">
 		<style type="text/css">
 			.d a{
 				color: #D84F2B;
 			}
 		</style>
-		<script type="text/javascript" src="libs/jquery.js"></script>
 		<script type="text/javascript" src="libs/seeui.js"></script>
-		<script type="text/javascript" src="libs/plug/seeui.searchSelect.js"></script>
-		<script type="text/javascript">
-			(function($){
-				var _s = seeui;
-				$(function(){
-					var search = seeui.searchSelect('search',{
-						width:120,
-						height:25,
-						title:'apple',
-						data:{
-							"value":[
-								{"id":0,"txt":"ipadmini"},
-								{"id":1,"txt":"ipad"},
-								{"id":2,"txt":"ipod"},
-								{"id":3,"txt":"iphone"},
-								{"id":4,"txt":"mac"},
-								{"id":5,"txt":"nono"}
-							]
-						},
-						overChangeEvent:function(ui){
-							//console.log(ui)
-						}
-					});
-				})
-			})(jQuery);
-		</script>
 	</head>
 	<body>
+		<div id='controllers' ctrl='searchSelect' style='display:none;'></div>
 		<div id="search"></div>
 	</body>
 </html>

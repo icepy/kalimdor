@@ -1,7 +1,7 @@
 /*
 *	搜索自定义选择
 */
-seeui.UI.addplug('searchSelect',function(g,d,o){
+seeui.UI.addplug('searchSelect',function(d,o){
 	var $d = $('#'+d);
 	/*
 	*	@config 配置参数
