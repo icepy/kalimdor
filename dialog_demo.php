@@ -17,10 +17,7 @@
 		</style>	
 		<script type="text/javascript" src="libs/seeui.js"></script>
 	</head>
-	<body>
+	<body id="body">
 		<div id='controllers' ctrl='controllers' style='display:none;'></div>
-		<div class="d">
-			<a href="#" id="a">点击对话框1</a>
-		</div>
 	</body>
 </html>
