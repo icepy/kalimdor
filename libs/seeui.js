@@ -198,6 +198,8 @@
 
 					@2013年8月30日，实现了MVC核心基础构造，与文件加载路由模块。
 
+					@2013年8月30日下午4点40分，实现了MVC中视图加载模块，模型渲染模块基础构造。
+
 	*/
 	/*=================================================================================*/
 	/*=================================================================================*/
@@ -208,13 +210,11 @@
     	this.GATHERCTRL = {};  //从控制器中采集信息
     	this.CHILDCTRL = function(){ //用子类存储基本信息
     		this.VIEWS = null;
+    		this.INIT = null;
+    		this.ICO = null;
     	}
     	this.add = function(filename,fun){
     		self.GATHERCTRL = new fun();
-    		$(function(){
-    			//初始化
-    			self.GATHERCTRL.init();
-    		});
     	}
     }
     var _ctrl = _seeui.controllers = new _seeui.otherCtrl();
@@ -223,55 +223,117 @@
     		var _c = new _seeui.controllers.CHILDCTRL();
     		var _v = _seeui.controllers.GATHERCTRL;
     		_c.VIEWS = _v.views;
+    		_c.INIT = _v.init;
+    		_c.ICO = _v.ico;
     		if(_c.VIEWS !== 'none'){
-    			_seeui.view.LoadViews('views/'+_c.VIEWS+'.js');
+    			_seeui.view.LoadViews('views/'+_c.VIEWS+'.js',_c);
+    		}else{
+    			$(function(){
+    				_c.INIT();
+    			})
     		}
     	});
     }
-
     //视图类
     _seeui.otherView = function(){
     	var self = this;
     	this.GATHERVIEW = {}; //从视图中采集信息
     	this.CHILDVIEW = function(){  //用子类存储基本信息
-
+    		this.loadStr = null;
+    		this.models = null;
+    		this.loadServer = null;
     	}
     	this.add = function(filename,fun){
     		self.GATHERVIEW = new fun();
     	}
     }
     var _view = _seeui.view = new _seeui.otherView();
-    _view.LoadViews = function(filename,callback){
+    _view.LoadViews = function(filename,_c){
     	_seeui.LoadFile.LoadScript(filename,function(){
     		var _v = new _seeui.view.CHILDVIEW();
     		var _m = _seeui.view.GATHERVIEW;
-    		_v.MODELS = _m.model;
-    		if(_v.MODELS !=='none'){
-    			//console.log(_v.MODELS);
-    			_seeui.model.loadM('models/'+_v.MODELS+'.js');
+    		_v.models = _m.model;
+    		if(_m.loadStr !== undefined && typeof _m.loadStr() === 'string'){
+    			_v.loadStr = _m.loadStr();
+    		}
+    		if(_m.loadServer !== undefined && typeof _m.loadServer === 'string' && _m.loadServer.split(':')[0] === 'url'){
+    			_v.loadServer = _m.loadServer.split(':')[1];
+    		}
+    		console.log(_v);
+    		console.log(_c);
+    		if(_v.models !=='none'){
+    			_seeui.model.loadM('models/'+_v.models+'.js',_v,_c);
     		}
     	});
     }
-
+    //从服务端加载视图
+    _view.LoadServerView = function(url,_m,_c){
+    	_seeui.getSrv({
+    		url:url,
+    		type:'GET',
+    		dataType:'html',
+    		callback:function(data){
+    			_seeui.model.getTemplate(data,_m,_c,function(){
+    				$(function(){
+    					_c.INIT();
+    				});
+    			});
+    		}
+    	})
+    }
     //模型类
     _seeui.otherModel = function(){
     	var self = this;
     	this.GATHERMODEL = {}; //从模型中采集数据
     	this.CHILDMODEL = function(){ //用子类存储基本信息
-
+    		this.data = null;
     	}
     	this.add = function(filename,fun){
     		self.GATHERMODEL = new fun();
     	}
     }
     var _model = _seeui.model = new _seeui.otherModel();
-    _model.loadM = function(filename,callback){
+    _model.loadM = function(filename,_v,_c){
     	_seeui.LoadFile.LoadScript(filename,function(){
-    			//////////
-    			//////////
-    			//////////
+    		var _m_v =  new _seeui.model.CHILDMODEL();
+    		var _v_ms = _seeui.model.GATHERMODEL;
+    		if(_v_ms.data !== null){
+    			_m_v.data = _v_ms.data;
+    		}
+    		//console.log(_v.loadServer);
+    		if(_v.loadStr !== null){
+    			_seeui.model.getTemplate(_v.loadStr,_m_v,_c,function(){
+    				$(function(){
+    					_c.INIT();
+    				});
+    			});
+    		}
+			if(_v.loadServer !== null && typeof _v.loadServer === 'string'){
+				_seeui.view.LoadServerView(_v.loadServer,_m_v,_c);
+			}
     	});
     }
-
+    //解析模版
+    _model.getTemplate = function(view,_m,_c,callback){
+    	var createTemplateScript = function(ico,callback){
+    		$('#'+ico).append('<script id="template" type="text/x-jquery-tmpl">'+view+'</script>');
+    		return true;
+    	}
+    	var deleteTemplateScript = function(){
+    		$('#template').remove();
+    	}
+    	if(typeof _c.ICO !== null){
+    		var _true = createTemplateScript(_c.ICO);
+    	}
+        
+        if(_true){
+        	var _value = _m.data.value;
+        	$('#template').tmpl(_value).appendTo('#body');
+        	deleteTemplateScript();
+        	if(typeof callback === 'function'){
+        		callback();
+        	}
+        }
+    }
     console.log(_seeui);
 })(window);

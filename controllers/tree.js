@@ -1,5 +1,5 @@
 seeui.controllers.add('tree',function(){
-	this.view = "none";
+	this.views = "none";
 	this.init = function(){
 		var _s = seeui;
 		var _tree = seeui.ui.tree('my_tree',{

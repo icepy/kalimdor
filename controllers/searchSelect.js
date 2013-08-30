@@ -1,5 +1,5 @@
 seeui.controllers.add('searchSelect',function(){
-	this.view = "none";
+	this.views = "none";
 	this.init = function(){
 		var _s = seeui;
 		var search = seeui.ui.searchSelect('search',{

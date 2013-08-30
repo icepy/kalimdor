@@ -1,10 +1,8 @@
 seeui.controllers.add('controllers',function(){
-	this.views = "con_view";
+	this.views = 'con_view';
+	this.ico = 'body';
 	this.init = function(){
 		var _s = seeui;
-		if($('#dialog').length == 0){
-			$('body').append('<div id="dialog"></div>');
-		}
 		var dialog = seeui.ui.dialog('dialog',{
 			autoOpen:true,
 			width:400,
@@ -27,8 +25,9 @@ seeui.controllers.add('controllers',function(){
 					}
 				}
 			]
+
 		});
-		$('#a').click(function(){
+		$('#open').click(function(){
 			dialog.open();
 		});
 	}
