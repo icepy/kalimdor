@@ -27,9 +27,9 @@ MVC 基于jQuery的一套重UI组件库，主要用于企业级应用，最适�
 
 程序运行需要的条件：dialog_demo.php为例。
 
-在dialog_demo页面中，在头部引入核心文件：@<script type="text/javascript" src="libs/seeui.js"></script>
+在dialog_demo页面中，在头部引入核心文件：@	<script type="text/javascript" src="libs/seeui.js"></script>
 
-在页面中定义控制器容器：@<div id='controllers' ctrl='controllers' style='display:none;'></div>  
+在页面中定义控制器容器：@	<div id='controllers' ctrl='controllers' style='display:none;'></div>  
 
 容器中，id与ctrl为必填，id必须是controllers，ctrl为任意字符串。
 
