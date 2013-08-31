@@ -1,6 +1,6 @@
 seeui.controllers.add('controllers',function(){
 	this.views = 'con_view';
-	this.ico = 'body';
+	this.ioc = 'body';
 	this.init = function(){
 		var _s = seeui;
 		var dialog = seeui.ui.dialog('dialog',{
