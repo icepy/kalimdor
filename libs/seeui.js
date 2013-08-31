@@ -200,6 +200,8 @@
 
 					@2013年8月30日下午4点40分，实现了MVC中视图加载模块，模型渲染模块基础构造。
 
+					@2013年8月31日 晚 21点08分，更新从服务端获取视图模型，在view中只需定义模型，视图与模型需要定义在一起。
+
 	*/
 	/*=================================================================================*/
 	/*=================================================================================*/
@@ -242,6 +244,7 @@
     		this.loadStr = null;
     		this.models = null;
     		this.loadServer = null;
+    		this.Template = null;
     	}
     	this.add = function(filename,fun){
     		self.GATHERVIEW = new fun();
@@ -259,8 +262,8 @@
     		if(_m.loadServer !== undefined && typeof _m.loadServer === 'string' && _m.loadServer.split(':')[0] === 'url'){
     			_v.loadServer = _m.loadServer.split(':')[1];
     		}
-    		console.log(_v);
-    		console.log(_c);
+    		//console.log(_v);
+    		//console.log(_c);
     		if(_v.models !=='none'){
     			_seeui.model.loadM('models/'+_v.models+'.js',_v,_c);
     		}
@@ -287,6 +290,7 @@
     	this.GATHERMODEL = {}; //从模型中采集数据
     	this.CHILDMODEL = function(){ //用子类存储基本信息
     		this.data = null;
+    		this.dataUrl = null;
     	}
     	this.add = function(filename,fun){
     		self.GATHERMODEL = new fun();
@@ -299,6 +303,29 @@
     		var _v_ms = _seeui.model.GATHERMODEL;
     		if(_v_ms.data !== null){
     			_m_v.data = _v_ms.data;
+    		}
+    		var loadDataServer = function(){
+    			_m_v.dataUrl = _v_ms.dataServer;
+    			_seeui.getSrv({
+    				url:_m_v.dataUrl,
+    				dataType:'json',
+    				type:'GET',
+    				callback:function(data){
+    					if(data.Template !== undefined){
+    						_v.Template = data.Template;
+    						_m_v.data = data;
+    						//console.log(_m_v.data)
+    						_seeui.model.getTemplate(_v.Template,_m_v,_c,function(){
+    							$(function(){
+    								_c.INIT();
+    							})
+    						});
+    					}
+    				}
+    			});
+    		}
+    		if(_v_ms.dataServer !== null){
+    			loadDataServer();
     		}
     		//console.log(_v.loadServer);
     		if(_v.loadStr !== null){
@@ -327,7 +354,9 @@
     	}
         
         if(_true){
+        	//console.log(_m)
         	var _value = _m.data.value;
+        	//console.log(_value);
         	$('#template').tmpl(_value).appendTo('#body');
         	deleteTemplateScript();
         	if(typeof callback === 'function'){
