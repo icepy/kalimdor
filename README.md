@@ -67,7 +67,7 @@ seeui.view.add('',function(){
 
 模型
 
-在models文件夹中定义视图，书写内容如下，data为本地数据，dataServer为服务端取模。
+在models文件夹中定义模型，书写内容如下，data为本地数据，dataServer为服务端取模。
 seeui.model.add('',function(){
 	this.data = {};
 	this.dataServer = '';
