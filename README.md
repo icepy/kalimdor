@@ -84,5 +84,6 @@ seeui.model.add('',function(){
 			this.close = function(){}
 		})
 
-	addplug方法为扩展组件类方法，参数第一项：'dialog'为必填项，此为类名。参数：function(d,o){}匿名函数 d为调用初始化时传入的id，o为调用初始化时是传入的配置对象。
+	addplug方法为扩展组件类方法，参数第一项：'dialog'为必填项，此为类名。
+	参数：function(d,o){}匿名函数 d为调用初始化时传入的id，o为调用初始化时是传入的配置对象。
 
