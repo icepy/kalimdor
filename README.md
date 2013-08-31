@@ -25,6 +25,57 @@ MVC 基于jQuery的一套重UI组件库，主要用于企业级应用，最适�
 
 =======
 
+程序运行需要的条件：dialog_demo.php为例。
+
+在dialog_demo页面中，在头部引入核心文件：<script type="text/javascript" src="libs/seeui.js"></script>
+
+在页面中定义控制器容器：<div id='controllers' ctrl='controllers' style='display:none;'></div>  
+
+容器中，id与ctrl为必填，id必须是controllers，ctrl为任意字符串。
+
+=========控制器
+
+在controllers文件夹中定义控制器文件，书写内容如下.views为视图文件名，ioc为容器，init为初始化容器。
+
+seeui.controllers.add('',function(){
+	this.views = '';
+	this.ioc = '';
+	this.init = function(){
+		//初始化容器
+	}
+});
+
+=========视图
+
+=========注意，如果是服务端取模，则不必定义视图loadStr或loadServer属性。
+
+在views文件夹中定义视图，书写内容如下，model为模型文件名，loadStr为返回的视图字符串，loadServer为从请求过来的视图{需要要定义本地模型数据}。
+
+seeui.view.add('',function(){
+	this.model = '';
+	this.loadStr = function(){
+		return '';
+    }
+    this.loadServer = '';
+})
+
+=========模型
+
+在models文件夹中定义视图，书写内容如下，data为本地数据，dataServer为服务端取模。
+seeui.model.add('',function(){
+	this.data = {};
+	this.dataServer = '';
+})
 
 
+==========组件类
 
+	如何定义组件类：
+
+		seeui.addplug('dialog',function(d,o){
+			this.open = function(){}
+			this.close = function(){}
+		})
+	addplug方法为扩展组件类方法，参数第一项：'dialog'为必填项，此为类名。参数：function(d,o){}匿名函数 d为调用初始化时传入的id，o为调用初始化时是传入的配置对象。
+
+	
