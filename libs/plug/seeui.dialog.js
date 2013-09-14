@@ -28,7 +28,7 @@ seeui.addplug('dialog',function(d,o){
 		buttons:[],
 		cursor:'',
 		shade:false,
-		drop:true
+		drop:false
 	};
 	var _config = $.extend(config,o);
 	//console.log(_config);

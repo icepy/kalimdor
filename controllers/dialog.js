@@ -1,4 +1,4 @@
-seeui.controllers.add('controllers',function(){
+seeui.controllers.add('dialog',function(){
 	this.views = 'con_view';
 	this.ioc = 'body';
 	this.init = function(){
@@ -31,5 +31,6 @@ seeui.controllers.add('controllers',function(){
 		$('#open').click(function(){
 			dialog.open();
 		});
+		//console.log('2');
 	}
 });
