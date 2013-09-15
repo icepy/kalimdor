@@ -27,7 +27,7 @@ seeui.addplug('tree',function(d,o){
     _v = function(){
         var _c = _config.data.split(':'),
             _url = _c[1];
-        _seeui.getSrv({
+        _seeui.ajax.getSrv({
             url:_url,
             callback:function(data){
                 var _value = data.value;
