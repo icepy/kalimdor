@@ -33,15 +33,24 @@ MVC 基于jQuery的一套重UI组件库，主要用于企业级应用，最适�
 
 	@增加了注释
 
+9月15日
+
+	@增加对多控制器的支持
+
 =======
 
 程序运行需要的条件：dialog_demo.php为例。
 
 	在dialog_demo页面中，在头部引入核心文件：<script type="text/javascript" src="libs/seeui.js"></script>
 
-	在页面中定义控制器容器：<div id='controllers' ctrl='controllers' style='display:none;'></div>  
+	在页面中定义控制器容器：<div id='controllers' ctrl='dialog' style='display:none;'></div>  
 
 容器中，id与ctrl为必填，id必须是controllers，ctrl为任意字符串。
+
+多控制器支持，程序运行条件。
+
+	在页面中定义的控制器容器，ctrl字段以|来分隔。
+	<div id='controllers' ctrl='dialog|dialog2|dialog3' style='display:none;'></div>  
 
 ========
 

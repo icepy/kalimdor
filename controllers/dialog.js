@@ -1,6 +1,6 @@
 seeui.controllers.add('dialog',function(){
 	this.views = 'con_view';
-	this.ioc = 'body';
+	this.ioc = 'console1';
 	this.init = function(){
 		var _s = seeui;
 		var dialog = seeui.ui.dialog('dialog',{
@@ -31,6 +31,6 @@ seeui.controllers.add('dialog',function(){
 		$('#open').click(function(){
 			dialog.open();
 		});
-		//console.log('2');
+		//console.log('1');
 	}
 });

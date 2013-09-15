@@ -17,7 +17,13 @@
 		</style>	
 		<script type="text/javascript" src="libs/seeui.js"></script>
 	</head>
-	<body id="body">
-		<div id='controllers' ctrl='dialog' style='display:none;'></div>
+	<body>
+		<div id='controllers' ctrl='dialog|dialog2|dialog3' style='display:none;'></div>
+		<!--
+			多控制器，写法。
+		-->
+		<div id="console1"></div>
+		<div id="console2"></div>
+		<div id="console3"></div>
 	</body>
 </html>

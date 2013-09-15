@@ -1,7 +1,5 @@
 /*
 *	MVC架构  基于jQuery的一套UI组件  metro风格 {还未完成。}
-*
-*	@目前只支持，单控制器，未来会增加对多控制器的支持。
 *	
 *	@2013年8月30日，实现了MVC核心基础构造，与文件加载路由模块。
 *
@@ -14,6 +12,8 @@
 *	@2013年9月14日  增加了mvc文件名字段
 *
 *	@2013年9月14日  增加了注释
+*
+*   @2013年9月15日  增加对多控制器的支持
 */
 (function(window,undefined){
 	var document = window.document,
@@ -47,7 +47,7 @@
 	/*
 		对cookie的封装
 	*/
-    var webCookie = function (name, value, options) {
+    _seeui.cookie = function (name, value, options) {
         if (typeof value != 'undefined') {
             options = options || {};
             if (value === null) {
@@ -97,32 +97,29 @@
 			return new callback(d,o);
 		}
     }
-	_seeui.getHead = function () {
-        var h = document.getElementsByTagName('head')[0];
-        if (!h) h = document.getDocumentElement().append('head');
-        return h
-    }
     /*
 		对jQuery ajax的封装，未来将增加解决跨域的封装方法
     */
-    _seeui.getSrv = function(gather){
-		var ajax = {
-			type: 'GET',
-			dataType: 'json',
-			complete: function(xhr, textStatus) {
-			    //called when complete
-			},
-			success: function(data, textStatus, xhr) {
-			    if(typeof gather.callback === 'function'){
-			    	gather.callback(data);
-			    }
-			},
-			error: function(xhr, textStatus, errorThrown) {
-			    alert('服务加载错误');
-			}
-		}
-		$.ajax($.extend(ajax,gather));
-	};
+    _seeui.ajax = {
+        getSrv:function(gather){
+            var ajax = {
+                type: 'GET',
+                dataType: 'json',
+                complete: function(xhr, textStatus) {
+
+                },
+                success: function(data, textStatus, xhr) {
+                    if(typeof gather.callback === 'function'){
+                        gather.callback(data);
+                    }
+                },
+                error: function(xhr, textStatus, errorThrown) {
+                    alert('服务加载错误');
+                }
+            }
+            $.ajax($.extend(ajax,gather));
+        }
+    }
 	/*
 		游览器检测
 	*/
@@ -199,7 +196,12 @@
 			var loc = document.location.href;
 			var _url = loc.substring(0,loc.lastIndexOf('/'));
 			return _url;
-		}
+		},
+        getHead:function () {
+            var h = document.getElementsByTagName('head')[0];
+            if (!h) h = document.getDocumentElement().append('head');
+            return h
+        }
 	};
 	/*
 		初始化时等待图标
@@ -226,7 +228,7 @@
     	动态脚本加载模块
     */
 	_seeui.LoadFile = (function(){
-		var Head = _seeui.getHead();
+		var Head = _seeui.com.getHead();
         var script = document.createElement('script');
         script.type = 'text/javascript';
         script.src = _seeui.LocaPath +'LAB.min.js';
@@ -251,7 +253,7 @@
 				}); 
 			},
 			LoadStyle:function(filename){
-				var Head = _seeui.getHead();
+				var Head = _seeui.com.getHead();
 				var fileref = document.createElement("link");
 		        fileref.setAttribute("rel", "stylesheet");
 		        fileref.setAttribute("type", "text/css");
@@ -278,7 +280,7 @@
 	//初始化相应的依赖库文件，css文件
 	(function(_seeui){
 		_seeui.LoadFile._loadinit(['libs/config.js'],function(){
-			_seeui.wait = LoadWaitIco();
+            _seeui.wait = LoadWaitIco();
 			_seeui.addplug = otherOption;
 			var libs = seeui.config.plug;
 			var _g = [];
@@ -291,7 +293,11 @@
 			}
 			$(function(){
 				seeui.LoadFile.LoadScript(_g,function(){
-					_seeui.controllers.LoadControllers(['controllers/'+$('#controllers').attr('ctrl')+'.js'],_seeui);
+                    var c = $('#controllers').attr('ctrl').split('|'),_c = [];
+                    $.each(c,function(_v){
+                        _c.push('controllers/'+c[_v]+'.js');
+                    });
+					_seeui.controllers.LoadControllers(_c,_seeui);
 				});
 			});
 		},_seeui);
@@ -309,75 +315,77 @@
     _seeui.otherCtrl = function(){
     	var self = this;
     	this.GATHERCTRL = {};  //从控制器中采集信息
-    	this.CTRLNAME = null;  //控制器名字
-    	this.CHILDCTRL = function(){ //用子类存储基本信息
-    		this.VIEWS = null;
-    		this.INIT = null;
-    		this.IOC = null;
-    		this._CTRLNAME = null;
-    	}
+    	this.CTRLNAME = [];  //控制器名字
+    	this.CHILDCTRL = function(){};
     	this.add = function(filename,fun){
-    		self.CTRLNAME = filename;
-    		self.GATHERCTRL = new fun();
+    		self.CTRLNAME.push(filename);
+    		self.GATHERCTRL[filename] = new fun();
     	}
     }
     var _ctrl = _seeui.controllers = new _seeui.otherCtrl();
     _ctrl.LoadControllers = function(filename,callback){
     	_seeui.LoadFile.LoadScript(filename,function(){   		
     		var _c = new _seeui.controllers.CHILDCTRL();
-    		var _v = _seeui.controllers.GATHERCTRL;
-    		_c._CTRLNAME = _seeui.controllers.CTRLNAME,_c.VIEWS = _v.views,_c.INIT = _v.init,_c.IOC = _v.ioc;
-    		if(_c.VIEWS !== 'none'){
-    			_seeui.view.LoadViews('views/'+_c.VIEWS+'.js',_c);
-    		}else{
-    			_c.INIT();
-    			_seeui.wait.RemoveWaitIco();
-    		}
+    		var _G_ctrl = _seeui.controllers.GATHERCTRL;
+    		_c.CTRL = _G_ctrl,_c._CTRLNAME = _seeui.controllers.CTRLNAME,_c.Views = [];
+            $.each(_c.CTRL,function(_i,_v){
+                if(_v['views'] !== 'none'){
+                    _c.Views.push('views/'+_v['views']+'.js');
+                }else{
+                    _v.init();
+                    _seeui.wait.RemoveWaitIco();
+                }
+            });
+            _seeui.view.LoadViews(_c.Views,_c);
     	});
     }
     //视图类
     _seeui.otherView = function(){
     	var self = this;
     	this.GATHERVIEW = {}; //从视图中采集信息
-    	this.VIEWNAME = null;
-    	this.CHILDVIEW = function(){  //用子类存储基本信息
-    		this.loadStr = null;
-    		this.models = null;
-    		this.loadServer = null;
-    		this.Template = null;
-    		this._VIEWNAME = null;
-    	}
+    	this.VIEWNAME = [];
+    	this.CHILDVIEW = function(){};
     	this.add = function(filename,fun){
-    		self.VIEWNAME = filename;
-    		self.GATHERVIEW = new fun();
+    		self.VIEWNAME.push(filename);
+    		self.GATHERVIEW[filename] = new fun();
     	}
     }
     var _view = _seeui.view = new _seeui.otherView();
     _view.LoadViews = function(filename,_c){
+        //console.log(filename)
+        //console.log(_c)
     	_seeui.LoadFile.LoadScript(filename,function(){
     		var _v = new _seeui.view.CHILDVIEW();
-    		var _m = _seeui.view.GATHERVIEW;
-    		_v.models = _m.model,_v._VIEWNAME = _seeui.view.VIEWNAME;
-    		if(_m.loadStr !== undefined && typeof _m.loadStr() === 'string'){
-    			_v.loadStr = _m.loadStr();
-    		}
-    		if(_m.loadServer !== undefined && typeof _m.loadServer === 'string' && _m.loadServer.split(':')[0] === 'url'){
-    			_v.loadServer = _m.loadServer.split(':')[1];
-    		}
-    		if(_v.models !=='none'){
-    			_seeui.model.loadM('models/'+_v.models+'.js',_v,_c);
-    		}
+    		var _G_view = _seeui.view.GATHERVIEW;
+            _v.VIEW = _G_view,_v._VIEWNAME = _seeui.view.VIEWNAME,_v.Models = [],_v.MVC_CTRL = {};
+            $.each(_c.CTRL,function(_i,_vc){
+                _v.MVC_CTRL[_vc['views']] = _vc;
+            });
+            //console.log(_v.VIEW);
+            $.each(_v.VIEW,function(_i,_k){
+                if(_k.loadStr !== undefined && typeof _k.loadStr() === 'string'){
+                    _k.loadStr = _k.loadStr();
+                }
+                if(_k.loadServer !== undefined && typeof _k.loadServer === 'string' && _k.loadServer.split(':')[0] === 'url'){
+                    _k.loadServer = _k.loadServer.split(':')[1];
+                }
+                if(_k['model'] !=='none'){
+                    _v.Models.push('models/'+_k['model']+'.js');
+                    
+                }
+            });
+            _seeui.model.loadM(_v.Models,_v,_c);
     	});
     }
     //从服务端加载视图
     _view.LoadServerView = function(url,_m,_c){
-    	_seeui.getSrv({
+    	_seeui.ajax.getSrv({
     		url:url,
     		type:'GET',
     		dataType:'html',
     		callback:function(data){
     			_seeui.model.getTemplate(data,_m,_c,function(){
-    				_c.INIT();
+    				_c.init();
     			});
     		}
     	})
@@ -386,57 +394,58 @@
     _seeui.otherModel = function(){
     	var self = this;
     	this.GATHERMODEL = {}; //从模型中采集数据
-    	this.MODELNAME = null;
-    	this.CHILDMODEL = function(){ //用子类存储基本信息
-    		this.data = null;
-    		this.dataUrl = null;
-    		this._MODELNAME = null;
-    	}
+    	this.MODELNAME = [];
+    	this.CHILDMODEL = function(){};
     	this.add = function(filename,fun){
-    		self.MODELNAME = filename;
-    		self.GATHERMODEL = new fun();
+    		self.MODELNAME.push(filename);
+    		self.GATHERMODEL[filename] = new fun();
     	}
     }
     var _model = _seeui.model = new _seeui.otherModel();
     _model.loadM = function(filename,_v,_c){
     	_seeui.LoadFile.LoadScript(filename,function(){
     		var _m_v =  new _seeui.model.CHILDMODEL();
-    		var _v_ms = _seeui.model.GATHERMODEL;
-    		_m_v._MODELNAME = _seeui.model.MODELNAME;
-    		if(_v_ms.data !== null){
-    			_m_v.data = _v_ms.data;
-    		}
-    		var loadDataServer = function(){
-    			_m_v.dataUrl = _v_ms.dataServer;
-    			_seeui.getSrv({
-    				url:_m_v.dataUrl,
-    				dataType:'json',
-    				type:'GET',
-    				callback:function(data){
-    					if(data.Template !== undefined){
-    						_v.Template = data.Template;
-    						_m_v.data = data;
-    						//console.log(_m_v.data)
-    						_seeui.model.getTemplate(_v.Template,_m_v,_c,function(){
-    							_c.INIT();
-    						});
-    					}
-    				}
-    			});
-    		}
-    		if(_v_ms.dataServer !== null){
-    			loadDataServer();
-    		}
-    		//console.log(_v.loadServer);
-    		if(_v.loadStr !== null){
-    			_seeui.model.getTemplate(_v.loadStr,_m_v,_c,function(){
-    				_c.INIT();
-    			});
-    		}
-			if(_v.loadServer !== null && typeof _v.loadServer === 'string'){
-				_seeui.view.LoadServerView(_v.loadServer,_m_v,_c);
-			}
+    		var _G_model = _seeui.model.GATHERMODEL;
+    		_m_v.MODEL = _G_model,_m_v._MODELNAME = _seeui.model.MODELNAME;
+            //console.log(_m_v.MODEL);
+            $.each(_m_v.MODEL,function(_i,_j){
+                if(_j.dataServer !== undefined){
+                    _seeui.model.loadDataServer(_j.dataServer,_v.MVC_CTRL[_j.view]);
+                }
+                //console.log(_v)
+                //console.log(_v.MVC_CTRL[_j.view]);
+                if(_v.VIEW[_j.view] !== undefined && _v.VIEW[_j.view].loadStr !== undefined){
+                    _seeui.model.getTemplate(_v.VIEW[_j.view].loadStr,_j,_v.MVC_CTRL[_j.view],function(){
+                        _v.MVC_CTRL[_j.view].init();
+                    });
+                }
+                //console.log(_v.VIEW[_j.view])
+                if(_v.VIEW[_j.view] !== undefined && typeof _v.VIEW[_j.view].loadServer === 'string'){
+                     _seeui.view.LoadServerView(_v.VIEW[_j.view].loadServer,_j,_v.MVC_CTRL[_j.view]);
+                }
+            });
+            _seeui.wait.RemoveWaitIco();
     	});
+    }
+    //从服务端获取所有数据 
+    _model.loadDataServer = function(url,_c){
+        _seeui.ajax.getSrv({
+            url:url,
+            dataType:'json',
+            type:'GET',
+            callback:function(data){
+                if(data.Template !== undefined ){
+                    var _m = {
+                        data:{
+                            value:data.value
+                        }
+                    }
+                    _seeui.model.getTemplate(data.Template,_m,_c,function(){
+                        _c.init();
+                    });
+                }
+            }
+        });
     }
     //解析模版
     _model.getTemplate = function(view,_m,_c,callback){
@@ -446,17 +455,17 @@
     	}
     	var deleteTemplateScript = function(){
     		$('#template').remove();
-    		_seeui.wait.RemoveWaitIco();
     	}
-    	if(typeof _c.IOC !== null){
-    		var _true = createTemplateScript(_c.IOC);
+        //console.log(view)
+        //console.log(_m);
+        //console.log(_c);
+    	if(typeof _c.ioc !== null){
+    		var _true = createTemplateScript(_c.ioc);
     	}
         
         if(_true){
-        	//console.log(_m)
         	var _value = _m.data.value;
-        	//console.log(_value);
-        	$('#template').tmpl(_value).appendTo('#body');
+        	$('#template').tmpl(_value).appendTo('#'+_c.ioc);
         	deleteTemplateScript();
         	if(typeof callback === 'function'){
         		callback();
