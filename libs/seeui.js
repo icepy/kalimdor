@@ -214,7 +214,7 @@
 		waitico += '<div id="waitIco" style="background:#fff;opacity:10;z-index:1000;width:'+_w+'px;height:'+_h+'px;">';
 		waitico += '<div style="background:url(css/image/waitloaded.gif);position: absolute;width:48px;height:48px;top:'+(_h-48)/2+'px;left:'+(_w-48)/2+'px;" alt="wati"></div>';
 		waitico += '</div>';
-		$('body').append(waitico);
+        $('body').append(waitico);
 		return {
 			RemoveWaitIco:function(){
 				$('#waitIco').hide();
@@ -279,13 +279,14 @@
 	})();
 	//初始化相应的依赖库文件，css文件
 	(function(_seeui){
+        //console.log(seeui.com.getBody());
 		_seeui.LoadFile._loadinit(['libs/config.js'],function(){
-            _seeui.wait = LoadWaitIco();
 			_seeui.addplug = otherOption;
+            _seeui.wait = LoadWaitIco();
 			var libs = seeui.config.plug;
 			var _g = [];
 			if(libs === "all"){
-				_g.push('libs/seeui.all.js');
+				_g.push('libs/seeui.ui.all.js');
 			}else{
 				$.each(libs, function(index, val) {
 					_g.push('libs/plug/seeui.'+val+'.js');
