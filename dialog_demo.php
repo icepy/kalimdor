@@ -19,6 +19,7 @@
 	</head>
 	<body>
 		<div id='controllers' ctrl='dialog|dialog2|dialog3' style='display:none;'></div>
+		<!-- <div id='controllers' ctrl='dialog' style='display:none;'></div> -->
 		<!--
 			多控制器，写法。
 		-->

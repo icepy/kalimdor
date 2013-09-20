@@ -14,6 +14,9 @@
 *	@2013年9月14日  增加了注释
 *
 *   @2013年9月15日  增加对多控制器的支持
+*
+*   @2013年9月20日  增加action动作列队
+*
 */
 (function(window,undefined){
 	var document = window.document,
@@ -44,10 +47,21 @@
 		})();
 	}
 	var _seeui = seeui;
+    //字符串拼接stringBuffer 类似 StringBuilder
+    var StringBuffer = function () {
+        this._strs = new Array();
+    }
+    StringBuffer.prototype.append = function (str) {
+        this._strs.push(str);
+    };
+    StringBuffer.prototype.ToString = function (str) {
+        if (str === undefined) str = "";
+        return this._strs.join(str);
+    };
 	/*
 		对cookie的封装
 	*/
-    _seeui.cookie = function (name, value, options) {
+    var cookie = function (name, value, options) {
         if (typeof value != 'undefined') {
             options = options || {};
             if (value === null) {
@@ -120,6 +134,17 @@
             $.ajax($.extend(ajax,gather));
         }
     }
+    _seeui.cookie = {
+        setCookie:function(name, value, opts){
+            var o = opts;
+            if( o === undefined ) o = { path: '/', expires: 1 }
+            cookie(name, value, opts);
+        },
+        getCookie:function(name){
+            if( name === undefined ) return null;
+            return cookie(name);
+        }
+    }
 	/*
 		游览器检测
 	*/
@@ -137,8 +162,11 @@
     	正则表达式
     */
 	_seeui.reg = {
+        //获取网页body部份代码
 		body:/<body[^>]*>([\s\S]*)<\/body>/i,
+        //获取网页style部份代码
 		style:/<style[^>]*>([\s\S]*)<\/style>/i,
+        //获取网页script部份代码
 		script:/<script\b[^<]*(?:(?!<\/script)<[^>]*)*<\/script>/gi
 	}
 	/*
@@ -324,10 +352,12 @@
     	}
     }
     var _ctrl = _seeui.controllers = new _seeui.otherCtrl();
+    //控制器加载
     _ctrl.LoadControllers = function(filename,callback){
     	_seeui.LoadFile.LoadScript(filename,function(){   		
     		var _c = new _seeui.controllers.CHILDCTRL();
     		var _G_ctrl = _seeui.controllers.GATHERCTRL;
+            console.log(_G_ctrl);
     		_c.CTRL = _G_ctrl,_c._CTRLNAME = _seeui.controllers.CTRLNAME,_c.Views = [];
             $.each(_c.CTRL,function(_i,_v){
                 if(_v['views'] !== 'none'){
@@ -339,6 +369,16 @@
             });
             _seeui.view.LoadViews(_c.Views,_c);
     	});
+    }
+    _ctrl.action = function(action){
+        /*
+        *   开启action模块，将自动寻找事件与事件处理程序，进行注册。
+        */
+        $.each(action,function(_i,_v){
+            $.each(_v,function(_j,_k){
+                $('#'+_j).bind(_i,_k);
+            });
+        });
     }
     //视图类
     _seeui.otherView = function(){
@@ -352,12 +392,14 @@
     	}
     }
     var _view = _seeui.view = new _seeui.otherView();
+
+    //视图加载
     _view.LoadViews = function(filename,_c){
-        //console.log(filename)
-        //console.log(_c)
+    
     	_seeui.LoadFile.LoadScript(filename,function(){
     		var _v = new _seeui.view.CHILDVIEW();
     		var _G_view = _seeui.view.GATHERVIEW;
+
             _v.VIEW = _G_view,_v._VIEWNAME = _seeui.view.VIEWNAME,_v.Models = [],_v.MVC_CTRL = {};
             $.each(_c.CTRL,function(_i,_vc){
                 _v.MVC_CTRL[_vc['views']] = _vc;
@@ -367,8 +409,8 @@
                 if(_k.loadStr !== undefined && typeof _k.loadStr() === 'string'){
                     _k.loadStr = _k.loadStr();
                 }
-                if(_k.loadServer !== undefined && typeof _k.loadServer === 'string' && _k.loadServer.split(':')[0] === 'url'){
-                    _k.loadServer = _k.loadServer.split(':')[1];
+                if(_k.loadServer !== undefined && typeof _k.loadServer === 'string'){
+                    _k.loadServer = _k.loadServer;
                 }
                 if(_k['model'] !=='none'){
                     _v.Models.push('models/'+_k['model']+'.js');
@@ -387,10 +429,14 @@
     		callback:function(data){
     			_seeui.model.getTemplate(data,_m,_c,function(){
     				_c.init();
+                    if(_c.action !== undefined){
+                        _ctrl.action(_c.action);
+                    }
     			});
     		}
     	})
     }
+
     //模型类
     _seeui.otherModel = function(){
     	var self = this;
@@ -403,6 +449,8 @@
     	}
     }
     var _model = _seeui.model = new _seeui.otherModel();
+
+    //模型加载
     _model.loadM = function(filename,_v,_c){
     	_seeui.LoadFile.LoadScript(filename,function(){
     		var _m_v =  new _seeui.model.CHILDMODEL();
@@ -410,19 +458,22 @@
     		_m_v.MODEL = _G_model,_m_v._MODELNAME = _seeui.model.MODELNAME;
             //console.log(_m_v.MODEL);
             $.each(_m_v.MODEL,function(_i,_j){
+                var mvc_ctrl = _v.MVC_CTRL[_j.view];
                 if(_j.dataServer !== undefined){
-                    _seeui.model.loadDataServer(_j.dataServer,_v.MVC_CTRL[_j.view]);
+                    _seeui.model.loadDataServer(_j.dataServer,mvc_ctrl);
                 }
-                //console.log(_v)
                 //console.log(_v.MVC_CTRL[_j.view]);
                 if(_v.VIEW[_j.view] !== undefined && _v.VIEW[_j.view].loadStr !== undefined){
-                    _seeui.model.getTemplate(_v.VIEW[_j.view].loadStr,_j,_v.MVC_CTRL[_j.view],function(){
-                        _v.MVC_CTRL[_j.view].init();
+                    _seeui.model.getTemplate(_v.VIEW[_j.view].loadStr,_j,mvc_ctrl,function(){
+                        mvc_ctrl.init();
+                        if(mvc_ctrl.action !== undefined){
+                            _ctrl.action(mvc_ctrl.action);
+                        }
                     });
                 }
                 //console.log(_v.VIEW[_j.view])
                 if(_v.VIEW[_j.view] !== undefined && typeof _v.VIEW[_j.view].loadServer === 'string'){
-                     _seeui.view.LoadServerView(_v.VIEW[_j.view].loadServer,_j,_v.MVC_CTRL[_j.view]);
+                    _seeui.view.LoadServerView(_v.VIEW[_j.view].loadServer,_j,mvc_ctrl);
                 }
             });
             _seeui.wait.RemoveWaitIco();
@@ -443,6 +494,9 @@
                     }
                     _seeui.model.getTemplate(data.Template,_m,_c,function(){
                         _c.init();
+                        if(_c.action !== undefined){
+                            _ctrl.action(_c.action);
+                        }
                     });
                 }
             }
@@ -463,7 +517,6 @@
     	if(typeof _c.ioc !== null){
     		var _true = createTemplateScript(_c.ioc);
     	}
-        
         if(_true){
         	var _value = _m.data.value;
         	$('#template').tmpl(_value).appendTo('#'+_c.ioc);
