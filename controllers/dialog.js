@@ -31,6 +31,5 @@ seeui.controllers.add('dialog',function(){
 		$('#open').click(function(){
 			dialog.open();
 		});
-		//console.log('1');
 	}
 });
