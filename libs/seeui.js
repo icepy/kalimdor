@@ -339,7 +339,7 @@
 	*/
 	/*=================================================================================*/
 	/*=================================================================================*/
-
+    var affair_data = [];
 	//控制器类
     _seeui.otherCtrl = function(){
     	var self = this;
@@ -370,16 +370,27 @@
             _seeui.view.LoadViews(_c.Views,_c);
     	});
     }
+    ///action动作列队
     _ctrl.action = function(action){
         /*
         *   开启action模块，将自动寻找事件与事件处理程序，进行注册。
         */
+
         $.each(action,function(_i,_v){
             $.each(_v,function(_j,_k){
-                $('#'+_j).bind(_i,_k);
+                if($('#'+_j)[0] !== undefined){
+                    affair_data.push({
+                        'type':_i,
+                        'ele':$('#'+_j),
+                        'affair_fun':_k
+                    });
+                    $('#'+_j).bind(_i,_k);
+                }
             });
         });
+        //console.log(affair_data);
     }
+    
     //视图类
     _seeui.otherView = function(){
     	var self = this;
