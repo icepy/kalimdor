@@ -8,7 +8,8 @@ seeui.controllers.add('dialog2',function(){
 	this.action = {
 		click:{
 			wow:function(event){
-				console.log(event)
+				var data = seeui.controllers.saveJSON();
+				console.log(data);
 			},
 			app:function(event){
 				console.log(event);

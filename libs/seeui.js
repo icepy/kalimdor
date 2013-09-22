@@ -253,6 +253,34 @@
 		}
 	}
     /*
+    *   错误信息打印
+    */
+    var Error = function(){
+        var _com = _seeui.com,
+            _w = _com.getWidth(),
+            _h = _com.getHeight(),
+            error = '';
+        error += '<div id="error" style="background:#fff;position:absolute;top:0xp;left:0px;opacity:10;z-index:1000;width:'+_w+'px;height:'+_h+'px;display:none;">';
+        error += '</div>';
+        $('body').append(error);
+        var _error = $('#error');
+        return {
+            system_error:function(object){
+                _error.empty(); 
+                _error.append('<div style="border:1px solid red;height:25px;">错误信息：'+JSON.stringify(object)+'</div>');
+                this._e = false;
+                _error.show();
+            },
+            value_error:function(object){
+                /*
+                *   稍后编写一个对value的模块，而不是debug模式
+                */
+                console.log('value值为空');
+            },
+            _e:true
+        }
+    }
+    /*
     	动态脚本加载模块
     */
 	_seeui.LoadFile = (function(){
@@ -311,6 +339,7 @@
 		_seeui.LoadFile._loadinit(['libs/config.js'],function(){
 			_seeui.addplug = otherOption;
             _seeui.wait = LoadWaitIco();
+            _seeui.error = Error();
 			var libs = seeui.config.plug;
 			var _g = [];
 			if(libs === "all"){
@@ -357,7 +386,7 @@
     	_seeui.LoadFile.LoadScript(filename,function(){   		
     		var _c = new _seeui.controllers.CHILDCTRL();
     		var _G_ctrl = _seeui.controllers.GATHERCTRL;
-            console.log(_G_ctrl);
+            //console.log(_G_ctrl);
     		_c.CTRL = _G_ctrl,_c._CTRLNAME = _seeui.controllers.CTRLNAME,_c.Views = [];
             $.each(_c.CTRL,function(_i,_v){
                 if(_v['views'] !== 'none'){
@@ -390,7 +419,59 @@
         });
         //console.log(affair_data);
     }
-    
+    _ctrl.saveJSON = function(id){
+        var S_JONS = [],
+            json = null;
+        if(typeof id === 'string'){
+            json = _seeui.model.GATHERMODEL[id].data.value;
+            $.each(json,function(_i,_v){
+                if(_v['id'] !== undefined){
+                    S_JONS.push({
+                        'id':_v['id'],
+                        'value':$('#'+_v['id']).val()
+                    });
+                }
+            });
+        }else{
+            json = _seeui.model.GATHERMODEL;
+            $.each(json,function(_i,_v){
+                var _value = _v['data'].value;
+                $.each(_value,function(_j,_k){
+                    if(_k['id'] !== undefined){
+                        S_JONS.push({
+                            'id':_k['id'],
+                            'value':$('#'+_k['id']).val()
+                        });
+                    }
+                });
+            });
+        }   
+        var is = this.verifyvalue(S_JONS);
+        if(!is){
+            return false;
+        }
+        return JSON.stringify(S_JONS);
+    }
+
+    _ctrl.verifyvalue = function(json){
+        var _json = json,
+            verify = [],
+            isempty = false;
+        for(var i = 0,len = _json.length;i<len;i++){
+            if(_json[i].value.length === 0){
+                verify.push({
+                    'id':_json[i].id,
+                    'value':'值为空'
+                });
+                isempty = true;
+                continue;
+            }
+        }
+        _seeui.error.value_error(verify);
+        if(isempty){
+            return false;
+        }
+    }
     //视图类
     _seeui.otherView = function(){
     	var self = this;
@@ -470,8 +551,12 @@
             //console.log(_m_v.MODEL);
             $.each(_m_v.MODEL,function(_i,_j){
                 var mvc_ctrl = _v.MVC_CTRL[_j.view];
+                if(mvc_ctrl === undefined){
+                    _seeui.error.system_error(_j);
+                    return false;
+                }
                 if(_j.dataServer !== undefined){
-                    _seeui.model.loadDataServer(_j.dataServer,mvc_ctrl);
+                    _seeui.model.loadDataServer(_j.dataServer,_m_v.MODEL[_i],mvc_ctrl);
                 }
                 //console.log(_v.MVC_CTRL[_j.view]);
                 if(_v.VIEW[_j.view] !== undefined && _v.VIEW[_j.view].loadStr !== undefined){
@@ -491,7 +576,7 @@
     	});
     }
     //从服务端获取所有数据 
-    _model.loadDataServer = function(url,_c){
+    _model.loadDataServer = function(url,_m_v,_c){
         _seeui.ajax.getSrv({
             url:url,
             dataType:'json',
@@ -503,6 +588,8 @@
                             value:data.value
                         }
                     }
+                    _m_v.data = _m.data;
+                    console.log(_c);
                     _seeui.model.getTemplate(data.Template,_m,_c,function(){
                         _c.init();
                         if(_c.action !== undefined){

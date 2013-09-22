@@ -41,6 +41,9 @@ MVC 基于jQuery的一套重UI组件库，主要用于企业级应用，最适�
 
 	@增加action动作列队与cookie api的封装
 
+9月22日
+
+	@增加debug模式，对模型的存储与检索
 =======
 
 程序运行需要的条件：dialog_demo.php为例。
