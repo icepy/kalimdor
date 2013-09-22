@@ -254,34 +254,6 @@
 		}
 	}
     /*
-    *   错误信息打印
-    */
-    var Error = function(){
-        var _com = _seeui.com,
-            _w = _com.getWidth(),
-            _h = _com.getHeight(),
-            error = '';
-        error += '<div id="error" style="background:#fff;position:absolute;top:0xp;left:0px;opacity:10;z-index:1000;width:'+_w+'px;height:'+_h+'px;display:none;">';
-        error += '</div>';
-        $('body').append(error);
-        var _error = $('#error');
-        return {
-            system_error:function(object){
-                _error.empty(); 
-                _error.append('<div style="border:1px solid red;height:25px;">错误信息：'+JSON.stringify(object)+'</div>');
-                this._e = false;
-                _error.show();
-            },
-            value_error:function(object){
-                /*
-                *   稍后编写一个对value的模块，而不是debug模式
-                */
-                console.log('value值为空');
-            },
-            _e:true
-        }
-    }
-    /*
     	动态脚本加载模块
     */
 	_seeui.LoadFile = (function(){
@@ -331,6 +303,7 @@
 				$LAB.script(arr).wait(function () {
                 	fun();
             	});
+                
 			}
         }
 	})();
@@ -340,9 +313,12 @@
 		_seeui.LoadFile._loadinit(['libs/config.js'],function(){
 			_seeui.addplug = otherOption;
             _seeui.wait = LoadWaitIco();
-            _seeui.error = Error();
-			var libs = seeui.config.plug;
-			var _g = [];
+			var libs = seeui.config.plug,
+                debug = seeui.config.debug,
+			    _g = [];
+            if(debug !== undefined && debug !== false){
+                _g.push('libs/seeui.debug.js');   
+            }
 			if(libs === "all"){
 				_g.push('libs/seeui.ui.all.js');
 			}else{
@@ -353,10 +329,12 @@
 			$(function(){
 				seeui.LoadFile.LoadScript(_g,function(){
                     var c = $('#controllers').attr('ctrl').split('|'),_c = [];
+
                     $.each(c,function(_v){
                         _c.push('controllers/'+c[_v]+'.js');
                     });
 					_seeui.controllers.LoadControllers(_c,_seeui);
+
 				});
 			});
 		},_seeui);
@@ -382,8 +360,10 @@
     	}
     }
     var _ctrl = _seeui.controllers = new _seeui.otherCtrl();
+
     //控制器加载
     _ctrl.LoadControllers = function(filename,callback){
+
     	_seeui.LoadFile.LoadScript(filename,function(){   		
     		var _c = new _seeui.controllers.CHILDCTRL();
     		var _G_ctrl = _seeui.controllers.GATHERCTRL;
@@ -397,8 +377,10 @@
                     _seeui.wait.RemoveWaitIco();
                 }
             });
+            //console.log(_c.Views)
             _seeui.view.LoadViews(_c.Views,_c);
     	});
+
     }
     ///action动作列队
     _ctrl.action = function(action){
@@ -420,7 +402,11 @@
         });
         //console.log(affair_data);
     }
+
     _ctrl.saveJSON = function(id){
+        /*
+        *   存储
+        */
         var S_JONS = [],
             json = null;
         if(typeof id === 'string'){
@@ -455,6 +441,9 @@
     }
 
     _ctrl.verifyvalue = function(json){
+        /*
+        *   验证
+        */
         var _json = json,
             verify = [],
             isempty = false;
@@ -468,11 +457,12 @@
                 continue;
             }
         }
-        _seeui.error.value_error(verify);
+        
         if(isempty){
             return false;
         }
     }
+
     //视图类
     _seeui.otherView = function(){
     	var self = this;
@@ -488,8 +478,9 @@
 
     //视图加载
     _view.LoadViews = function(filename,_c){
-    
+
     	_seeui.LoadFile.LoadScript(filename,function(){
+            
     		var _v = new _seeui.view.CHILDVIEW();
     		var _G_view = _seeui.view.GATHERVIEW;
 
@@ -512,6 +503,7 @@
             });
             _seeui.model.loadM(_v.Models,_v,_c);
     	});
+        
     }
     //从服务端加载视图
     _view.LoadServerView = function(url,_m,_c){
@@ -545,20 +537,32 @@
 
     //模型加载
     _model.loadM = function(filename,_v,_c){
+
     	_seeui.LoadFile.LoadScript(filename,function(){
     		var _m_v =  new _seeui.model.CHILDMODEL();
     		var _G_model = _seeui.model.GATHERMODEL;
     		_m_v.MODEL = _G_model,_m_v._MODELNAME = _seeui.model.MODELNAME;
-            //console.log(_m_v.MODEL);
-            $.each(_m_v.MODEL,function(_i,_j){
+            var error = [];
+            //console.log(_m_v.MODEL)
+            for(var x in _m_v.MODEL){
+
+                var _j = _m_v.MODEL[x];
                 var mvc_ctrl = _v.MVC_CTRL[_j.view];
-                if(mvc_ctrl === undefined){
-                    _seeui.error.system_error(_j);
-                    return false;
+
+                if(mvc_ctrl === undefined && seeui.debug !== undefined){
+                    error.push({
+                        'errorfile':filename,
+                        'errorinfo':_j
+                    });
+                    continue;
                 }
-                if(_j.dataServer !== undefined){
-                    _seeui.model.loadDataServer(_j.dataServer,_m_v.MODEL[_i],mvc_ctrl);
+                
+                //console.log(_j.dataServer);
+                if(_j.dataServer !== undefined){ 
+                    _seeui.model.loadDataServer(_j.dataServer,_j,mvc_ctrl);
+                    continue;
                 }
+
                 //console.log(_v.MVC_CTRL[_j.view]);
                 if(_v.VIEW[_j.view] !== undefined && _v.VIEW[_j.view].loadStr !== undefined){
                     _seeui.model.getTemplate(_v.VIEW[_j.view].loadStr,_j,mvc_ctrl,function(){
@@ -568,12 +572,19 @@
                         }
                     });
                 }
+
                 //console.log(_v.VIEW[_j.view])
                 if(_v.VIEW[_j.view] !== undefined && typeof _v.VIEW[_j.view].loadServer === 'string'){
                     _seeui.view.LoadServerView(_v.VIEW[_j.view].loadServer,_j,mvc_ctrl);
                 }
-            });
-            _seeui.wait.RemoveWaitIco();
+
+            }
+            if(error.length !== 0){
+                _seeui.debug.system_error(error);
+            }
+
+            _seeui.wait.RemoveWaitIco();  
+
     	});
     }
     //从服务端获取所有数据 
@@ -590,7 +601,7 @@
                         }
                     }
                     _m_v.data = _m.data;
-                    console.log(_c);
+                   // console.log(_c);
                     _seeui.model.getTemplate(data.Template,_m,_c,function(){
                         _c.init();
                         if(_c.action !== undefined){
@@ -610,9 +621,6 @@
     	var deleteTemplateScript = function(){
     		$('#template').remove();
     	}
-        //console.log(view)
-        //console.log(_m);
-        //console.log(_c);
     	if(typeof _c.ioc !== null){
     		var _true = createTemplateScript(_c.ioc);
     	}
