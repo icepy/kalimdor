@@ -7,4 +7,6 @@ seeui.model.add('con_model',function(){
 	// }
 	this.view = 'con_view';
 	this.dataServer = 'data/dialog.js';
+
+	/////多模型测试
 });
