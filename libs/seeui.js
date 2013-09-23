@@ -387,7 +387,6 @@
         /*
         *   开启action模块，将自动寻找事件与事件处理程序，进行注册。
         */
-
         $.each(action,function(_i,_v){
             $.each(_v,function(_j,_k){
                 if($('#'+_j)[0] !== undefined){
@@ -457,10 +456,13 @@
                 continue;
             }
         }
-        
         if(isempty){
+            if(seeui.debug !== undefined){
+                seeui.debug.value_error(verify);
+            }
             return false;
         }
+        return true;
     }
 
     //视图类

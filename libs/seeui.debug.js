@@ -9,7 +9,7 @@
             _h = _com.getHeight(),
             error = '';
         error += '<div id="debug_error" style="background:#fff;position:absolute;top:0xp;left:0px;opacity:10;z-index:1000;width:'+(_w-200)+'px;height:'+_h+'px;display:none;">';
-        error += '<h2>MVC核心模块debug：</h2><div id="error"></div>';
+        error += '<h2>debug模块：</h2><div id="error"></div>';
         error += '</div>';
         $('body').append(error);
         var _error = $('#error'),
@@ -33,6 +33,20 @@
                 _error.show();
                 _debug_error.show();
             },
+            value_error:function(ary){
+                _waitIco.hide();
+                var _error_div = '';
+                _error.empty();
+                for(var i = 0,len = ary.length;i<len;i++){
+                    _error_div += '<div style="border:1px solid red;color:red;margin-top:10px;padding:0 0 0 5px;">';
+                    _error_div += '<div style="margin-bottom:5px;">错误所在id：'+JSON.stringify(ary[i].id)+'</div>';
+                    _error_div += '<div style="margin-bottom:5px;">错误信息value：'+JSON.stringify(ary[i].value)+'</div></div>';
+                } 
+                _error.append(_error_div);
+                this._e = false;
+                _error.show();
+                _debug_error.show();
+            },  
             _e:true
         }
     }
