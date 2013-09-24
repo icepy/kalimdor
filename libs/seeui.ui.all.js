@@ -472,7 +472,7 @@ seeui.addplug('tree',function(d,o){
     _v = function(){
         var _c = _config.data.split(':'),
             _url = _c[1];
-        _seeui.getSrv({
+        _seeui.ajax.getSrv({
             url:_url,
             callback:function(data){
                 var _value = data.value;
@@ -746,7 +746,7 @@ seeui.addplug('roll',function(d,o){
             updown();
         },
         around_init:function(cost){
-        	
+
         }
 
     }
