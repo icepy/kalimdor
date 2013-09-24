@@ -373,6 +373,7 @@
                 if(_v['views'] !== 'none'){
                     _c.Views.push('views/'+_v['views']+'.js');
                 }else{
+                    //console.log(_v);
                     _v.init();
                     _seeui.wait.RemoveWaitIco();
                 }

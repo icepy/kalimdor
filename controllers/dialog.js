@@ -32,11 +32,11 @@ seeui.controllers.add('dialog',function(){
 		$('#open').click(function(){
 			dialog.open();
 		});
-		seeui.ajax.getSrv({
-			url:'cgi-bin/debug.py',
-			callback:function(data){
+		// seeui.ajax.getSrv({
+		// 	url:'cgi-bin/debug.py',
+		// 	callback:function(data){
 
-			}
-		})
+		// 	}
+		// })
 	}
 });
