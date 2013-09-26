@@ -18,6 +18,8 @@
 *   @2013年9月20日  增加action动作列队
 *
 *   @2013年9月22日  增加debug模式，对模型的存储与检索
+*
+*   @2013年9月26日  增加对控件的自动化渲染机制
 */
 (function(window,undefined){
 	var document = window.document,
@@ -48,20 +50,44 @@
 		})();
 	}
 	var _seeui = seeui;
-    //字符串拼接stringBuffer 类似 StringBuilder
-    var StringBuffer = function () {
-        this._strs = new Array();
-    }
-    StringBuffer.prototype.append = function (str) {
-        this._strs.push(str);
-    };
-    StringBuffer.prototype.ToString = function (str) {
-        if (str === undefined) str = "";
-        return this._strs.join(str);
-    };
 	/*
-		对cookie的封装
+		ui组件类集合
 	*/
+	seeui.ui = {};
+	/*
+		UI类
+	*/
+	var otherOption = function(namespace,callback){
+		seeui.ui[namespace] = function(d,o){
+			return new callback(d,o);
+		}
+    }
+    /*
+		对jQuery ajax的封装，未来将增加解决跨域的封装方法
+    */
+    _seeui.ajax = {
+        getSrv:function(gather){
+            var ajax = {
+                type: 'GET',
+                dataType: 'json',
+                complete: function(xhr, textStatus) {
+
+                },
+                success: function(data, textStatus, xhr) {
+                    if(typeof gather.callback === 'function'){
+                        gather.callback(data);
+                    }
+                },
+                error: function(xhr, textStatus, errorThrown) {
+                    alert('服务加载错误');
+                }
+            }
+            $.ajax($.extend(ajax,gather));
+        }
+    }
+    /*
+        对cookie的封装
+    */
     var cookie = function (name, value, options) {
         if (typeof value != 'undefined') {
             options = options || {};
@@ -100,41 +126,6 @@
             return cookieValue;
         }
     };
-	/*
-		ui组件类集合
-	*/
-	seeui.ui = {};
-	/*
-		UI类
-	*/
-	var otherOption = function(namespace,callback){
-		seeui.ui[namespace] = function(d,o){
-			return new callback(d,o);
-		}
-    }
-    /*
-		对jQuery ajax的封装，未来将增加解决跨域的封装方法
-    */
-    _seeui.ajax = {
-        getSrv:function(gather){
-            var ajax = {
-                type: 'GET',
-                dataType: 'json',
-                complete: function(xhr, textStatus) {
-
-                },
-                success: function(data, textStatus, xhr) {
-                    if(typeof gather.callback === 'function'){
-                        gather.callback(data);
-                    }
-                },
-                error: function(xhr, textStatus, errorThrown) {
-                    alert('服务加载错误');
-                }
-            }
-            $.ajax($.extend(ajax,gather));
-        }
-    }
     _seeui.cookie = {
         setCookie:function(name, value, opts){
             var o = opts;
@@ -160,7 +151,7 @@
         android: navigator.userAgent.indexOf('Android') > -1 || navigator.userAgent.indexOf('Linux') > -1
     }
     /*
-    	正则表达式
+    	页面解析正则表达式
     */
 	_seeui.reg = {
         //获取网页body部份代码
@@ -240,10 +231,10 @@
 			_w = _com.getWidth(),
 			_h = _com.getHeight(),
 			waitico = '';
-		waitico += '<div id="waitIco" style="background:#fff;opacity:10;z-index:1000;width:'+_w+'px;height:'+_h+'px;">';
+		waitico += '<div id="waitIco" style="position:absolute;background:#fff;opacity:10;z-index:1000;width:'+_w+'px;height:'+_h+'px;">';
 		waitico += '<div style="background:url(css/image/waitloaded.gif);position: absolute;width:48px;height:48px;top:'+(_h-48)/2+'px;left:'+(_w-48)/2+'px;" alt="wati"></div>';
 		waitico += '</div>';
-        $('body').append(waitico);
+        $('body').prepend(waitico);
 		return {
 			RemoveWaitIco:function(){
 				$('#waitIco').hide();
@@ -307,6 +298,7 @@
 			}
         }
 	})();
+    
 	//初始化相应的依赖库文件，css文件
 	(function(_seeui){
         //console.log(seeui.com.getBody());
@@ -573,6 +565,9 @@
                         if(mvc_ctrl.action !== undefined){
                             _ctrl.action(mvc_ctrl.action);
                         }
+                        if(mvc_ctrl.automation !== undefined){
+                            _model.automation(mvc_ctrl.automation,_j);
+                        }
                     });
                 }
 
@@ -585,9 +580,7 @@
             if(error.length !== 0){
                 _seeui.debug.system_error(error);
             }
-
-            _seeui.wait.RemoveWaitIco();  
-
+           _seeui.wait.RemoveWaitIco();  
     	});
     }
     //从服务端获取所有数据 
@@ -635,6 +628,18 @@
         		callback();
         	}
         }
+    }
+    _model.automation = function(auto,_m){
+        var _auto = auto.split(','),
+            _value = _m.data.value,
+            _result = _m.data.result;
+        $.each(_auto,function(_j,_k){
+            $.each(_value,function(_i,_v){
+                if(_v.type === _k){
+                    seeui.ui[_k](_v.id,_v);
+                }
+            });
+        });
     }
     console.log(_seeui);
 })(window);

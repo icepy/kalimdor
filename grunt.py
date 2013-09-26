@@ -12,8 +12,9 @@ import libs.config
 x = libs.config.file_config
 folder = os.getcwd()
 folder_config = os.path.dirname(libs.config.__file__)
-if not os.path.exists(folder_config + '/newfile'):
-	os.mkdir(folder_config + '/newfile')
+folder_path = folder_config + '/newfile'
+if not os.path.exists(folder_path):
+	os.mkdir(folder_path)
 	pass
 
 #压缩文件字段名
@@ -22,28 +23,31 @@ compression = ('.css','.js')
 #合并函数
 def gruntFile(x):
 	y = {}
-	_newFile = {};
-	for _key,_value in x.items():
-		y[_key] = []
-		_path = folder_config + '/newfile/'+_key
-		if not os.path.exists(_path):
-			os.mkdir(_path)
+	_newFile = {}
+	for _keys,_value in x.items():
+		suffix = _keys
+		for _key,_val in _value.items():
+			y[_key] = []
+			_path = folder_path+'/'+_key
+			if not os.path.exists(_path):
+				os.mkdir(_path)
+				pass
+			_newFile[_key] = open(_path + '/'+_key + suffix,'w',encoding = 'utf-8')
+			for _file in _val:
+				print('合并的文件：'+_file)
+				_open = open(_file,'r',encoding='utf-8');
+				_content = _open.read()
+				y[_key].append(_content) 
+				_open.close()
+				pass
 			pass
-		_newFile[_key] = open(_path + '/'+_key+'.js','w',encoding = 'utf-8')
-		for _file in _value:
-			print('合并的文件：'+_file)
-			_open = open(_file,'r',encoding='utf-8');
-			_content = _open.read()
-			y[_key].append(_content) 
-			_open.close()
-			pass
-		pass
+	print('')
 	for _k,_v in y.items():
 		_f = _newFile[_k]
 		for _Content in _v:
 			_f.write(_Content)
 			pass
-		print(_k +'.js------文件合并完成')
+		print('文件合并完成之后的目录：'+folder_path+'/'+_k)
 		_f.close()
 		pass
 	pass

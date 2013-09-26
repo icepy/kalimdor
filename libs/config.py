@@ -1,11 +1,19 @@
 ﻿file_config = {
-	"libs":(
-		"libs/jquery.js",
-		"libs/jquery.tmpl.js"
-	),
-	"plug":(
-		"libs/seeui.js",
-		"libs/plug/seeui.dialog.js",
-		"libs/plug/seeui.roll.js"
-	)
+	".js":{
+		"libs":(
+			"libs/jquery.js",
+			"libs/jquery.tmpl.js"
+		),
+		"plug":(
+			"libs/seeui.js",
+			"libs/plug/seeui.dialog.js",
+			"libs/plug/seeui.roll.js"
+		)
+	},
+	".css":{
+		"styleall":(
+			"css/reset-min.css",
+			"css/seeui.css"
+		)
+	}
 } 

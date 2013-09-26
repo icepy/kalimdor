@@ -156,3 +156,40 @@ ul{
     display: block;
     cursor: pointer;
 }
+/*
+*   样式定制
+*/
+.roll_ioc{
+    overflow: hidden;
+    position: relative;
+    width: 620px;
+    height: 220px;
+}
+
+.roll_ioc ol.roll_ol{
+    position: absolute;
+    z-index: 10;
+}
+
+.roll_ioc ul.roll_ul{
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    z-index: 100;
+}
+.roll_ioc ul.roll_ul li{
+   
+    background-color: rgba(0, 0, 0, 0.6);
+    border-radius: 12px 12px 12px 12px;
+    color: #fff;
+    cursor: pointer;
+    float: left;
+    font: 400 15px/26px Arial;
+    height: 24px;
+    margin-right: 5px;
+    text-align: center;
+    width: 24px;
+}
+.roll_ioc ul.roll_ul li.hover{
+    background-color: #D51938;
+}

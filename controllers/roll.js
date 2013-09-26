@@ -15,5 +15,12 @@ seeui.controllers.add('roll',function(){
             url:'img/',
             _class:'roll_ioc'
         });
+
+        var _v = _s.ui.roll('content2',{
+            value:val,
+            url:'img/',
+            result:'updown',
+            _class:'roll_ioc'
+        });
 	}
 });

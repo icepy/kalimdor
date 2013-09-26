@@ -1,8 +1,8 @@
 /*
-*	roll滚动，淡出淡入，上下，左右滚动
+*   roll滚动，淡出淡入，上下，左右滚动
 */
 seeui.addplug('roll',function(d,o){
-	var self = this,
+    var self = this,
         ioc = $('#'+d),
         config = {
             autoPlay:false,
@@ -17,10 +17,12 @@ seeui.addplug('roll',function(d,o){
         },
         _config = $.extend(config,o);
     _config._class !== null ? ioc.addClass(_config._class) : ioc.addClass('roll_default');
+    //console.log(ioc)
+    //console.log(_config);
     /*
     *   管理一些必须的dom对象
     */
-    this.dom = {
+    var dom = {
         ioc:ioc,
         but_ul:null,
         con_ol:null
@@ -41,50 +43,51 @@ seeui.addplug('roll',function(d,o){
         max_w:ioc.width(),
         sin_w:ioc.width()
     }
-
+    if(_config.result === 'updown' || _config.result === 'around'){
+        _config.autoTime = _config.autoTime*2;
+    }
     /*
     *   大量的逻辑，在类的内部完成 ，扩展内部逻辑，在action中
     */
     var action = {
         _init:function(){
-            this.create_view();
+            this.create_create_view();
         },
-        create_view:function(){
-            var view = '',value = _config.value,_c_id = _config.Children_id;
+        create_create_view:function(){
+            var create_view = '',value = _config.value,_c_id = _config.Children_id;
             if(_config.url === null){
                 _config.url = '';
             }
+            //console.log(value)
             if(value.length !== 0){
-                /*
-                *   从渲染开始的
-                */
-                view += '<ol class="roll_ol" id="roll_ol_'+id+'">';
+                create_view += '<ol class="roll_ol" id="roll_ol_'+d+'">';
                 for(var i = 0,len = value.length;i<len;i++){
-                    i == 0 ? view += '<li id="'+value[i].id+'_pus" style="display:block;">' : view += '<li id="'+value[i].id+'_pus" style="display:none;">';
-                    view += '<a href="#"><img src="'+_config.url+value[i].img+'"/>';
-                    view += '</a></li>';
+                    i == 0 ? create_view += '<li id="'+value[i].id+'_pus" style="display:block;">' : create_view += '<li id="'+value[i].id+'_pus" style="display:none;">';
+                    create_view += '<a href="#"><img src="'+_config.url+value[i].img+'"/>';
+                    create_view += '</a></li>';
                 }
-                view += '</ol>';
-                view += '<ul class="roll_ul" id="roll_ul_'+id+'">';
+                create_view += '</ol>';
+                create_view += '<ul class="roll_ul" id="roll_ul_'+d+'">';
                 for(var j = 0;j<_config.butnum;j++){
-                    j == 0 ? view +='<li class="hover">'+(j+1)+'</li>' : view +='<li>'+(j+1)+'</li>';
+                    j == 0 ? create_view +='<li class="hover">'+(j+1)+'</li>' : create_view +='<li>'+(j+1)+'</li>';
                 }
-                view += '</ul>';
-                self.dom.ioc.append(view);
-                self.dom.but_ul = $('#roll_ul_'+id);
-                self.dom.con_ol = $('#roll_ol_'+id);
+                create_view += '</ul>';
+                //console.log(create_view);
+                dom.ioc.append(create_view);
+                dom.but_ul = $('#roll_ul_'+d);
+                dom.con_ol = $('#roll_ol_'+d);
 
             }else{
                 /*
                 *   如果是纯静态页面
                 */
                 if(typeof _c_id === 'string'){
-                    console.log(self.dom.ioc);
+                    console.log(dom.ioc);
                 }
 
             }
             //记录最大次数
-            time.max = self.dom.con_ol.children().length;
+            time.max = dom.con_ol.children().length;
             this.addition();
             this.addEvent();
         },
@@ -102,15 +105,15 @@ seeui.addplug('roll',function(d,o){
             }
         },
         addEvent:function(){
-            self.dom.but_ul.delegate('li','mouseenter',function(e){
+            dom.but_ul.delegate('li','mouseenter',function(e){
                 var _t = parseInt($(this).text());
                 time.cost = _t - 1;
                 action.branch();
                 clearTimeout(time.add)
                 clearTimeout(time.subtr);
             });
-            self.dom.but_ul.delegate('li','mouseleave',function(e){
-                if(time.cost === 4){
+            dom.but_ul.delegate('li','mouseleave',function(e){
+                if(time.cost === time.max -1){
                     time.cost = -1;
                     action.addition();
                     return;
@@ -151,8 +154,8 @@ seeui.addplug('roll',function(d,o){
             },_config.autoTime);
         },
         fade_init:function(cost){
-            var chil_ol = self.dom.con_ol.children(),
-                chil_ul = self.dom.but_ul.children(),
+            var chil_ol = dom.con_ol.children(),
+                chil_ul = dom.but_ul.children(),
                 _ac = {'display':'block'},
                 _ca = {'display':'none'};
             if(time.cache){
@@ -168,30 +171,38 @@ seeui.addplug('roll',function(d,o){
             time.cacheul = $(chil_ul[cost]);
         },
         updown_init:function(cost){
-            var chil_ul = self.dom.but_ul.children();
+            var chil_ul = dom.but_ul.children();
+            var chil_ol = dom.con_ol.children();
             if(time.cache){
-                var chil_ol = self.dom.con_ol.children();
                 time.cacheul = $(chil_ul[0]);
                 time.cache = false;
                 $.each(chil_ol,function(i){
                     $(chil_ol[i]).css({'display':'block'});
                 });
             }
-            
-            return;
-            var updown = function(){
-                var s = -(time.sin_h/_config.autoTime)*1000;
-                var ms = -(time.sin_h/_config.autoTime);
+            var _times = _config.autoTime / 2;
+            console.log(_times);
+            var updown_x = function(){
+
+                var _cost = -(time.sin_h)*cost;
                 
             }
-            updown();
+            var updown_y = function(){
+
+            }
+            if(cost < time.max ){
+                console.log(cost);
+                time.updownadd = setTimeout(function(){
+                    updown_x();
+                },0);
+            }
         },
         around_init:function(cost){
 
         }
 
     }
-    console.log(this.dom);
+    console.log(dom);
     /*
     *   初始化
     */
