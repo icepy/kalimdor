@@ -1,7 +1,7 @@
 seeui.controllers.add('input',function(){
 	this.views = 'input_view';
 	this.ioc = 'content';
-	this.automation = 'text,roll';
+	this.automation = 'text';
 	this.init = function(){
 		var _s = seeui;
 		$('#test').bind('click',function(){

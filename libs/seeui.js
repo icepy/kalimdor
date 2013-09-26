@@ -23,31 +23,33 @@
 */
 (function(window,undefined){
 	var document = window.document,
-    navigator = window.navigator;
+    navigator = window.navigator,
+    local = window.location;
     if(window.seeui) return;
 	if(!window.seeui){
-		window.seeui = (function(){
-			var pathinfo = {
-	            LocaPath: (function () {
-	                var BasePATH = window.SEEUI||'';
-	                if (!BasePATH) {
-	                    var jstag = document.getElementsByTagName('script');
-	                    for (var snum = 0; snum < jstag.length; snum++) {
-	                        var srcMatch = jstag[snum].src.match(/(^|.*[\\\/])seeui(?:_basic)?.js(?:\?.*)?$/i);
-	                        if (srcMatch) {
-	                            BasePATH = srcMatch[1];
-	                            break;
-	                        }
-	                    }
-	                }
-	                return BasePATH;
-	            })()
-			}
-			/*
-				未来pathinfo，将增加多个字段来存储相应的信息
-			*/
-			return pathinfo;
-		})();
+		window.seeui = {};
+        seeui.pathinfo = (function(){
+            var pathinfo = {
+                LocaPath: (function () {
+                    var BasePATH = window.SEEUI||'';
+                    if (!BasePATH) {
+                        var jstag = document.getElementsByTagName('script');
+                        for (var snum = 0; snum < jstag.length; snum++) {
+                            var srcMatch = jstag[snum].src.match(/(^|.*[\\\/])seeui(?:_basic)?.js(?:\?.*)?$/i);
+                            if (srcMatch) {
+                                BasePATH = srcMatch[1];
+                                break;
+                            }
+                        }
+                    }
+                    return BasePATH;
+                })()
+            }
+            /*
+                未来pathinfo，将增加多个字段来存储相应的信息
+            */
+            return pathinfo;
+        })();
 	}
 	var _seeui = seeui;
 	/*
@@ -282,7 +284,7 @@
 		var Head = _seeui.com.getHead();
         var script = document.createElement('script');
         script.type = 'text/javascript';
-        script.src = _seeui.LocaPath +'LAB.min.js';
+        script.src = _seeui.pathinfo.LocaPath +'LAB.min.js';
         Head.appendChild(script);
         return {
 			_loadinit:function(arr,fun,_see){
@@ -660,10 +662,10 @@
         	}
         }
     }
+    //自动渲染ui应用层控件
     _model.automation = function(auto,_m){
         var _auto = auto.split(','),
-            _value = _m.data.value,
-            _result = _m.data.result;
+            _value = _m.data.value;
         $.each(_auto,function(_j,_k){
             $.each(_value,function(_i,_v){
                 if(_v.type === _k){
