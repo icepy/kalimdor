@@ -221,6 +221,37 @@
             var h = document.getElementsByTagName('head')[0];
             if (!h) h = document.getDocumentElement().append('head');
             return h
+        },
+        fadeIn:function(elem,speed,opacity){
+            var elem = elem;
+            var speed = speed || 20;
+            var opacity = opacity || 100;
+            elem.css({'display':'block'});
+            var val = 0;
+            var _fadein = function(){
+                seeui.com.setOpacity(elem[0], val);
+                val += 5;
+                if (val <= opacity) {
+                    setTimeout(arguments.callee, speed)
+                }
+            }
+            _fadein();
+        },
+        fadeOut:function(elem,speed,opacity){
+            var elem = elem;
+            var speed = speed || 20;
+            var opacity = opacity || 0;
+            var val = 100;
+            var _fadeout = function(){
+                seeui.com.setOpacity(elem[0], val);
+                val -= 5;
+                if (val >= opacity) {
+                    setTimeout(arguments.callee, speed);
+                }else if (val < 0) {
+                    elem.css({'display':'none'});
+                }
+            }
+            _fadeout();
         }
 	};
 	/*

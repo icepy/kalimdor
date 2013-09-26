@@ -156,14 +156,13 @@ seeui.addplug('roll',function(d,o){
         fade_init:function(cost){
             var chil_ol = dom.con_ol.children(),
                 chil_ul = dom.but_ul.children(),
-                _ac = {'display':'block'},
-                _ca = {'display':'none'};
+                _ca = {'display':'none'}
             if(time.cache){
                 time.cacheol = $(chil_ol[0]);
                 time.cacheul = $(chil_ul[0]);
                 time.cache = false;
             }
-            $(chil_ol[cost]).css(_ac);
+            seeui.com.fadeIn($(chil_ol[cost]));
             time.cacheol.css(_ca);
             time.cacheol = $(chil_ol[cost]);
             $(chil_ul[cost]).addClass('hover');
@@ -181,7 +180,7 @@ seeui.addplug('roll',function(d,o){
                 });
             }
             var _times = _config.autoTime / 2;
-            console.log(_times);
+            //console.log(_times);
             var updown_x = function(){
 
                 var _cost = -(time.sin_h)*cost;
@@ -191,7 +190,7 @@ seeui.addplug('roll',function(d,o){
 
             }
             if(cost < time.max ){
-                console.log(cost);
+                //console.log(cost);
                 time.updownadd = setTimeout(function(){
                     updown_x();
                 },0);
