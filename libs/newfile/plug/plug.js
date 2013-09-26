@@ -18,6 +18,8 @@
 *   @2013年9月20日  增加action动作列队
 *
 *   @2013年9月22日  增加debug模式，对模型的存储与检索
+*
+*
 */
 (function(window,undefined){
 	var document = window.document,
