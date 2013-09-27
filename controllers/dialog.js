@@ -28,7 +28,7 @@ seeui.controllers.add('dialog',function(){
 			]
 
 		});
-		console.log($('#open'));
+		//console.log($('#open'));
 		$('#open').click(function(){
 			dialog.open();
 		});
