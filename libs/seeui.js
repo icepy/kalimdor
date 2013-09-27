@@ -43,7 +43,12 @@
                         }
                     }
                     return BasePATH;
-                })()
+                })(),
+                getURL:function(){
+                    var loc = document.location.href;
+                    var _url = loc.substring(0,loc.lastIndexOf('/'));
+                    return _url;
+                }
             }
             /*
                 未来pathinfo，将增加多个字段来存储相应的信息
@@ -140,42 +145,9 @@
         }
     }
 	/*
-		游览器检测
-	*/
-    _seeui.browser = {
-        IE: !!(window.attachEvent && navigator.userAgent.indexOf('Opera') === -1),
-        Opera: navigator.userAgent.indexOf('Opera') > -1,
-        //检测浏览器是否为WebKit内核
-        WebKit: navigator.userAgent.indexOf('AppleWebKit/') > -1,
-        //检测浏览器是否为Gecko内核，如Firefox
-        Gecko: navigator.userAgent.indexOf('Gecko') > -1 && navigator.userAgent.indexOf('KHTML') === -1,
-        MobileSafari: !!navigator.userAgent.match(/Apple.*Mobile.*Safari/),
-        android: navigator.userAgent.indexOf('Android') > -1 || navigator.userAgent.indexOf('Linux') > -1
-    }
-    /*
-    	页面解析正则表达式
-    */
-	_seeui.reg = {
-        //获取网页body部份代码
-		body:/<body[^>]*>([\s\S]*)<\/body>/i,
-        //获取网页style部份代码
-		style:/<style[^>]*>([\s\S]*)<\/style>/i,
-        //获取网页script部份代码
-		script:/<script\b[^<]*(?:(?!<\/script)<[^>]*)*<\/script>/gi
-	}
-	/*
 		公共工具函数集合
 	*/
 	_seeui.com = {
-		//设置透明
-		setOpacity:function(node,level){  
-			node = typeof node == "string" ? document.getElementById(node) : node;
-		    if (document.all) {
-		        node.style.filter = 'alpha(opacity = ' + level + ')';
-		    } else {
-		    	node.style.opacity = level / 100;
-		    }
-		},
 		//获取宽度
 		getWidth:function(){
 			var de = document.documentElement;
@@ -188,14 +160,6 @@
 			var de = document.documentElement;
             var bd = document.body;
             return self.innerHeight || (de && de.clientHeight || de.offsetHeight) || (bd != null ? bd.clientHeight : 0);
-		},
-		//判断是否为function
-		isFunction:function(f){
-			return typeof f === 'function';
-		},
-		//判断是否为string
-		isString:function(s){
-			return typeof s === 'string';
 		},
 		//判断是否为array
 		isArray:function(a){
@@ -214,69 +178,11 @@
 			}
 			return -1;
 		},
-		getURL:function(){
-			var loc = document.location.href;
-			var _url = loc.substring(0,loc.lastIndexOf('/'));
-			return _url;
-		},
         getHead:function () {
             var h = document.getElementsByTagName('head')[0];
             if (!h) h = document.getDocumentElement().append('head');
             return h
-        },
-        fadeIn:function(elem,speed,opacity){
-            var elem = elem;
-            var speed = speed || 20;
-            var opacity = opacity || 100;
-            elem.css({'display':'block'});
-            var val = 0;
-            var _fadein = function(){
-                seeui.com.setOpacity(elem[0], val);
-                val += 5;
-                if (val <= opacity) {
-                    setTimeout(arguments.callee, speed)
-                }
-            }
-            _fadein();
-        },
-        fadeOut:function(elem,speed,opacity){
-            var elem = elem;
-            var speed = speed || 20;
-            var opacity = opacity || 0;
-            var val = 100;
-            var _fadeout = function(){
-                seeui.com.setOpacity(elem[0], val);
-                val -= 5;
-                if (val >= opacity) {
-                    setTimeout(arguments.callee, speed);
-                }else if (val < 0) {
-                    elem.css({'display':'none'});
-                }
-            }
-            _fadeout();
-        },
-        slideup:function(elem,change,max,slide){
-            var val = change || 0;
-            var _up = function(){
-                val -= 5;
-                elem.css({top:val});
-                if(max <= val){
-                    setTimeout(arguments.callee,0);
-                }
-            }
-            _up();
-        },
-        slidedown:function(elem,change,max,slide){
-            var val = change || 0;
-            var _down = function(){
-                val += 5;
-                elem.css({top:val});
-                if(max >= val){
-                    setTimeout(arguments.callee,0);
-                }
-            }
-            _down();
-        }   
+        } 
 	};
 	/*
 		初始化时等待图标

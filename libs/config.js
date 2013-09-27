@@ -1,6 +1,6 @@
 seeui.config = {
 	style:['reset-min.css'],
 	library:['jquery.js'],
-	plug:['dialog','roll','tree','upload','searchSelect','vitrification','text'],
+	plug:['dialog','tree','upload','searchSelect','text'],
 	debug:true
 }

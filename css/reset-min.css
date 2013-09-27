@@ -10,23 +10,23 @@ html{color:#000;background:#FFF}body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre
 
 
 body{
-	font-family: 微软雅黑;
+    font-family: 微软雅黑;
 }
 .none{
-	display: none;
+    display: none;
 }
 .block{
-	display: block;
+    display: block;
 }
 button{
     border: 0px;
 }
 a{
-	text-decoration: none;
+    text-decoration: none;
 
 }
 ul{
-	list-style: none;
+    list-style: none;
 }
 /*dialog*/
 .seeui_father_com{
@@ -40,7 +40,7 @@ ul{
     display: none;
 }
 .seeui_bottom_but{
-	height: 25px;
+    height: 25px;
     padding: 5px 0 5px 0;
     border-top: 1px solid #d84f2b;
     background: #fff;
@@ -61,7 +61,7 @@ ul{
     background: #f76a47;
 }
 .seeui_top_title{
-	height: 30px;
+    height: 30px;
     border-bottom: 1px solid #d84f2b;
     background: #d84f2b;
     line-height: 30px;
@@ -70,7 +70,7 @@ ul{
     color: #fff;
 }
 .seeui_bottom_items{
-	margin-right: 10px;
+    margin-right: 10px;
 }
 /*vitrification*/
 .seeui_vitribut{
@@ -166,42 +166,4 @@ ul{
     border-bottom:1px dashed #d84f2b;
     display: block;
     cursor: pointer;
-}
-
-/*
-*   样式定制
-*/
-.roll_ioc{
-    overflow: hidden;
-    position: relative;
-    width: 620px;
-    height: 220px;
-}
-
-.roll_ioc ol.roll_ol{
-    position: absolute;
-    z-index: 10;
-}
-
-.roll_ioc ul.roll_ul{
-    position: absolute;
-    bottom: 5px;
-    right: 5px;
-    z-index: 100;
-}
-.roll_ioc ul.roll_ul li{
-   
-    background-color: rgba(0, 0, 0, 0.6);
-    border-radius: 12px 12px 12px 12px;
-    color: #fff;
-    cursor: pointer;
-    float: left;
-    font: 400 15px/26px Arial;
-    height: 24px;
-    margin-right: 5px;
-    text-align: center;
-    width: 24px;
-}
-.roll_ioc ul.roll_ul li.hover{
-    background-color: #D51938;
 }
