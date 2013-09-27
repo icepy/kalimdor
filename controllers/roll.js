@@ -22,5 +22,12 @@ seeui.controllers.add('roll',function(){
             result:'updown',
             _class:'roll_ioc'
         });
+
+        var n = _s.ui.roll('content3',{
+            value:val,
+            url:'img/',
+            result:'around',
+            _class:'roll_ioc'
+        });
 	}
 });

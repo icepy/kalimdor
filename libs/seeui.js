@@ -254,7 +254,29 @@
                 }
             }
             _fadeout();
-        }
+        },
+        slideup:function(elem,change,max,slide){
+            var val = change || 0;
+            var _up = function(){
+                val -= 5;
+                elem.css({top:val});
+                if(max <= val){
+                    setTimeout(arguments.callee,0);
+                }
+            }
+            _up();
+        },
+        slidedown:function(elem,change,max,slide){
+            var val = change || 0;
+            var _down = function(){
+                val += 5;
+                elem.css({top:val});
+                if(max >= val){
+                    setTimeout(arguments.callee,0);
+                }
+            }
+            _down();
+        }   
 	};
 	/*
 		初始化时等待图标

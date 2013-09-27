@@ -37,11 +37,14 @@ seeui.addplug('roll',function(d,o){
         cacheol:null,
         cacheul:null,
         cache:true,
+        change_bool:false,
         max_h:-(ioc.height()*_config.butnum),
-        sin_h:ioc.height(),
+        sin_h:ioc.height()+4,
+        change_h:0,
         cost_h:0,
-        max_w:ioc.width(),
-        sin_w:ioc.width()
+        max_w:-(ioc.height()*_config.butnum),
+        sin_w:ioc.width()+4,
+        change_w:0
     }
     if(_config.result === 'updown' || _config.result === 'around'){
         _config.autoTime = _config.autoTime*2;
@@ -179,25 +182,51 @@ seeui.addplug('roll',function(d,o){
                     $(chil_ol[i]).css({'display':'block'});
                 });
             }
-            var _times = _config.autoTime / 2;
-            //console.log(_times);
-            var updown_x = function(){
-
-                var _cost = -(time.sin_h)*cost;
-                
+            var _sin_h = -(time.sin_h * cost);
+            if(!time.change_bool){
+                if(cost === time.max - 1){
+                    time.change_bool = true;
+                }
+                seeui.com.slideup(dom.con_ol,time.change_h,_sin_h);
+                time.change_h = -time.sin_h*cost;
+            }else{
+                if(cost === 0){
+                    time.change_bool = false;
+                }
+                seeui.com.slidedown(dom.con_ol,time.change_h,_sin_h);
+                time.change_h = -time.sin_h*cost; 
             }
-            var updown_y = function(){
-
-            }
-            if(cost < time.max ){
-                //console.log(cost);
-                time.updownadd = setTimeout(function(){
-                    updown_x();
-                },0);
-            }
+            $(chil_ul[cost]).addClass('hover');
+            time.cacheul.removeClass('hover');
+            time.cacheul = $(chil_ul[cost]);
         },
         around_init:function(cost){
-
+            var chil_ul = dom.but_ul.children();
+            var chil_ol = dom.con_ol.children();
+            if(time.cache){
+                time.cacheul = $(chil_ul[0]);
+                time.cache = false;
+                $.each(chil_ol,function(i){
+                    $(chil_ol[i]).css({'display':'block'});
+                });
+            }
+            var _sin_w = -(time.sin_w * cost);
+            if(!time.change_bool){
+                if(cost === time.max - 1){
+                    time.change_bool = true;
+                }
+                //seeui.com.slideup(dom.con_ol,time.change_w,_sin_w);
+                time.change_w = -time.sin_w*cost;
+            }else{
+                if(cost === 0){
+                    time.change_bool = false;
+                }
+                //seeui.com.slidedown(dom.con_ol,time.change_w,_sin_w);
+                time.change_w = -time.sin_w*cost; 
+            }
+            $(chil_ul[cost]).addClass('hover');
+            time.cacheul.removeClass('hover');
+            time.cacheul = $(chil_ul[cost]);
         }
 
     }
