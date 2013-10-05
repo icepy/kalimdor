@@ -355,37 +355,41 @@
         });
         //console.log(affair_data);
     }
-
     _ctrl.saveJSON = function(id){
         /*
         *   存储
         */
         var S_JONS = [],
-            json = null;
-        if(typeof id === 'string'){
-            json = _seeui.model.GATHERMODEL[id].data.value;
-            $.each(json,function(_i,_v){
-                if(_v['id'] !== undefined){
-                    S_JONS.push({
-                        'id':_v['id'],
-                        'value':$('#'+_v['id']).val()
-                    });
+            json = null,
+            _value = null,
+            find = function(value){
+                for(var i = 0,len = value.length;i<len;i++){
+                    var field = value[i].field;
+                    for(var j = 0,le = field.length;j<le;j++){
+                        if(field[j].id !== undefined){
+                            S_JONS.push({
+                                'id':field[j].id,
+                                'value':$('#'+field[j].id).val()
+                            });
+                        }
+                    }
                 }
-            });
+            }
+        if(typeof id === 'string'){
+            json = _seeui.model.GATHERMODEL[id];
+            if(json.dataServer !== undefined){
+                _value = json.data.value;
+                find(_value);
+            }
         }else{
             json = _seeui.model.GATHERMODEL;
-            $.each(json,function(_i,_v){
-                var _value = _v['data'].value;
-                $.each(_value,function(_j,_k){
-                    if(_k['id'] !== undefined){
-                        S_JONS.push({
-                            'id':_k['id'],
-                            'value':$('#'+_k['id']).val()
-                        });
-                    }
-                });
-            });
-        }   
+            for(x in json){
+                if(json[x].dataServer !== undefined){
+                    _value = json[x].data.value;
+                    find(_value);
+                }
+            }
+        }
         var is = this.verifyvalue(S_JONS);
         if(!is){
             return false;
@@ -559,18 +563,63 @@
                     }
                     _m_v.data = _m.data;
                    // console.log(_c);
-                    _seeui.model.getTemplate(data.Template,_m,_c,function(){
+                    _seeui.model.renderingTemplate(data.Template,_m,_c,function(){
                         _c.init();
                         if(_c.action !== undefined){
                             _ctrl.action(_c.action);
+                        }
+                        
+                        if(_c.automation !== undefined){
+                            var _automodel = _m.data.value;
+                            for(var i = 0,len = _automodel.length;i<len;i++){
+                                var mod = {
+                                    "data":{
+                                        "value":_automodel[i].field
+                                    }
+                                }
+                                //console.log(i);
+                                _seeui.model.automation(_c.automation,mod);
+                            }
                         }
                     });
                 }
             }
         });
     }
+    var renderModelArray = [],
+        renderModelBool = false;
+    //渲染模板
+    _model.renderingTemplate = function(template,_m,_c,callback){
+        var _template = template.split(','),
+            _ioc = _c.ioc.split(','),
+            _m = _m.data.value;
+        for(var i = 0,len = _m.length;i<len;i++){
+            var mod = {
+                "data":{
+                    "value":_m[i].field
+                }
+            }
+            var ctr = {
+                "ioc":_ioc[i]
+            }
+            _model.getTemplate(_template[i],mod,ctr,function(){
+                renderModelArray.push(i);
+            });
+            if(renderModelArray.length === _m.length){
+                renderModelBool = true;
+            }
+        }
+        if(renderModelBool){
+            if(typeof callback === 'function'){
+                callback();
+            }
+        }
+    }
     //解析模版
     _model.getTemplate = function(view,_m,_c,callback){
+        // console.log(view);
+        // console.log(_m);
+        // console.log(_c);
     	var createTemplateScript = function(ioc,callback){
     		$('#'+ioc).append('<script id="template" type="text/x-jquery-tmpl">'+view+'</script>');
     		return true;
@@ -594,6 +643,8 @@
     _model.automation = function(auto,_m){
         var _auto = auto.split(','),
             _value = _m.data.value;
+            //console.log(_value);
+            //console.log(_m);
         $.each(_auto,function(_j,_k){
             $.each(_value,function(_i,_v){
                 if(_v.type === _k){

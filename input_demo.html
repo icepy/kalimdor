@@ -10,12 +10,30 @@
 		<!-- Replace favicon.ico & apple-touch-icon.png in the root of your domain and delete these references -->
 		<link rel="shortcut icon" href="/favicon.ico" />
 		<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+		<style type="text/css">
+			.table td{
+				width: 120px;
+				height: 30px;
+				border: 1px solid #565;
+				padding: 0.5rem;
+			}
+		</style>
 		<script type="text/javascript" src="libs/seeui.js"></script>
 	</head>
 	<body>
 		<div id='controllers' ctrl='input' style='display:none;'></div>
-		<h2>测试debug模式，存储 || 测试控件自动化渲染机制</h2>
-		<div id="content"></div>
+		<br/>
+		<h1>测试debug模式，存储 || 测试控件自动化渲染机制</h1>
+		<br/>
+		<div id="content" style="padding:0 0 0 10px;">
+			<table class="table">
+				<tbody>
+					<tr id="table_1"></tr>
+					<tr id="table_2"></tr>
+				</tbody>
+			</table>
+		</div>
+		<br/>
 		<button id="test">测试debug模式和存储</button>
 	</body>
 </html>

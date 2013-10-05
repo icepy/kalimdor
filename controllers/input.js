@@ -1,13 +1,11 @@
 seeui.controllers.add('input',function(){
 	this.views = 'input_view';
-	this.ioc = 'content';
+	this.ioc = 'table_1,table_2';
 	this.automation = 'text';
 	this.init = function(){
-		var _s = seeui;
 		$('#test').bind('click',function(){
-			var data = _s.controllers.saveJSON();
+			var data = seeui.controllers.saveJSON();
 			console.log(data);
 		});
-		
 	}
 });
