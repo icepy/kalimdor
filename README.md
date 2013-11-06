@@ -1,4 +1,4 @@
-seeui是什么？
+kalimdor是什么？
 
 采用MVC经典软件模式，应用在企业级开发中{财务，报表类企业应用}，专注与后端的数据交互，代码结构控制，三层解耦。
 
@@ -47,11 +47,10 @@ seeui是什么？
 9月26日
 
 	@增加对控件的自动化渲染机制
-=======
 
 程序运行需要的条件：dialog_demo.php为例。
 
-	在dialog_demo页面中，在头部引入核心文件：<script type="text/javascript" src="libs/seeui.js"></script>
+	在dialog_demo页面中，在头部引入核心文件：<script type="text/javascript" src="libs/kalimdor.js"></script>
 
 	在页面中定义控制器容器：<div id='controllers' ctrl='dialog' style='display:none;'></div>  
 
@@ -68,7 +67,7 @@ seeui是什么？
 
 在controllers文件夹中定义控制器文件，书写内容如下.views为视图文件名，ioc为容器，init为初始化容器。
 ```javascript
-seeui.controllers.add('',function(){
+kalimdor.controllers.add('',function(){
 	this.views = '';
 	this.ioc = '';
 	this.init = function(){
@@ -84,7 +83,7 @@ seeui.controllers.add('',function(){
 
 在views文件夹中定义视图，书写内容如下，model为模型文件名，loadStr为返回的视图字符串，loadServer为从请求过来的视图{需要要定义本地模型数据}。
 ```javascript
-seeui.view.add('',function(){
+kalimdor.view.add('',function(){
 	this.model = '';
 	this.loadStr = function(){
 		return '';
@@ -98,7 +97,7 @@ seeui.view.add('',function(){
 
 在models文件夹中定义模型，书写内容如下，data为本地数据，dataServer为服务端取模。
 ```javascript
-seeui.model.add('',function(){
+kalimdor.model.add('',function(){
 	this.data = {};
 	this.dataServer = '';
 })
@@ -108,7 +107,7 @@ seeui.model.add('',function(){
 组件类
 
 	如何定义组件类：
-	seeui.addplug('dialog',function(d,o){
+	kalimdor.addplug('dialog',function(d,o){
 		this.open = function(){}
 		this.close = function(){}
 	})
