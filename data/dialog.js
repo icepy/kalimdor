@@ -1,5 +1,5 @@
 {
-	"Template":"<div id=\"${id}\"><a href=\"#\">${name}</a></div>",
+	"Template":"<%_.each(value,function(k){%><div id=\"<%=k.id%>\"><a href=\"#\"><%=k.name%></a></div><%})%>",
 	"value":[
 		{"field":[
 			{"id":"open","name":"打开dialog对话框测试"},

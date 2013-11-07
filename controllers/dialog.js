@@ -1,10 +1,10 @@
-seeui.controllers.add('dialog',function(){
+kalimdor.controllers.add('dialog',function(){
 	this.views = 'con_view';
 	this.ioc = 'console1';
 	this.init = function(){
-		var _s = seeui;
-		var dialog = seeui.ui.dialog('dialog',{
-			autoOpen:true,
+		var _s = kalimdor;
+		var dialog = kalimdor.ui.dialog('dialog',{
+			autoOpen:false,
 			width:400,
 			height:80,
 			zIndex:200,
@@ -32,14 +32,6 @@ seeui.controllers.add('dialog',function(){
 		$('#open').click(function(){
 			dialog.open();
 		});
-		// seeui.ajax.getSrv({
-		// 	url:'cgi-bin/debug.py',
-		// 	callback:function(data){
-
-		// 	}
-		// })
-//////
-
-///
+		//console.log(kalimdor.get('con_model2'));
 	}
 });

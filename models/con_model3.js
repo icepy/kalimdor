@@ -1,4 +1,4 @@
-seeui.model.add('con_model3',function(){
+kalimdor.model.add('con_model3',function(){
 	this.view = 'con_view3';
 	this.data = {
 		"value":[

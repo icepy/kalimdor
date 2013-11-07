@@ -1,3 +1,3 @@
-seeui.view.add('input_view',function(){
+kalimdor.view.add('input_view',function(){
     this.model = "input_model";
 });

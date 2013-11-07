@@ -1,5 +1,5 @@
 {
-	"Template":"<td id=\"${id}_td\"></td>,<td id=\"${id}_td\"></td>",
+	"Template":["<%_.each(value,function(v){%><td id=\"<%=v.id%>_td\"></td><%})%>","<%_.each(value,function(v){%><td id=\"<%=v.id%>_td\"></td><%})%>"],
 	"value":[
 		{"field":[
 			{"type":"text","id":"2"},

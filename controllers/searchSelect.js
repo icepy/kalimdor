@@ -1,8 +1,8 @@
-seeui.controllers.add('searchSelect',function(){
+kalimdor.controllers.add('searchSelect',function(){
 	this.views = "none";
 	this.init = function(){
-		var _s = seeui;
-		var search = seeui.ui.searchSelect('search',{
+		var _s = kalimdor;
+		var search = kalimdor.ui.searchSelect('search',{
 			width:120,
 			height:25,
 			title:'apple',

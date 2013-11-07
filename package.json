@@ -1,0 +1,21 @@
+{
+    "name":"kalimdor",
+    "version":"0.1.0",
+    "author":"xiangwenwen",
+    "github":"https://github.com/xiangwenwe/kalimdor",
+    "dependent":{
+    	"lab":"LAB.js",
+    	"jquery":"jQuery.js",
+        "underscore":"underscore.js"
+    },
+    "devDependencies": {
+        "grunt": "~0.4.0",
+        "grunt-contrib-jshint": "~0.1.1",
+        "grunt-contrib-uglify": "~0.1.2",
+        "grunt-contrib-concat": "~0.1.1"
+    },
+    "address":{
+        "plug":"libs/plug/",
+        "libs":"libs/"
+    }
+}

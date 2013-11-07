@@ -1,4 +1,4 @@
-seeui.model.add('con_model',function(){
+kalimdor.model.add('con_model',function(){
 	// this.data = {
 	// 	"value":[
 	// 		{"id":"open","name":"打开dialog对话框测试"},

@@ -1,7 +1,7 @@
-seeui.controllers.add('upload',function(){
+kalimdor.controllers.add('upload',function(){
 	this.views = "none";
 	this.init = function(){
-		var _s = seeui;
+		var _s = kalimdor;
         var initdialog = function(){
             if($('#up_dialog').length === 0 ){
                 $('body').append('<a href="#" id="up_submint">upload</a><div id="dialog"><div id="uploads"></div></div>')
