@@ -1,5 +1,5 @@
 /*!!
-*   MVC架构  基于jQuery的解决方案{还未完成}
+*   MVC架构  基于jQuery underscore 的解决方案{还未完成}
 *
 *   @2013年8月30日，实现了MVC核心基础构造，与文件加载路由模块。
 *   
@@ -167,6 +167,7 @@
 			}
 			return -1;
 		},
+        //获取头部
         getHead:function () {
             var h = document.getElementsByTagName('head')[0];
             if (!h) h = document.getDocumentElement().append('head');
@@ -210,13 +211,13 @@
 						k = _kalim.config.library;
 					if(s.length !== 0 && _kalim.com.isArray(s)){
 						for(var i = 0,len = s.length;i<len;i++){
-							_kalim.LoadFile.LoadStyle(s[i]);
+							_kalim.LoadFile.LoadStyle(s[i]+'.css');
 						}
 					}
 					if(k.length !== 0 && _kalim.com.isArray(k)){
 						var _k = [];
 						for(var j =0,le = k.length;j<le;j++){
-							_k.push('libs/'+k[j]);
+							_k.push('libs/'+k[j]+'.js');
 						}
 						_kalim.LoadFile.LoadScript(_k,fun);
 					}
@@ -635,9 +636,6 @@
     }
     //渲染模版
     _model.getTemplate = function(view,_m,_c,callback){
-        // console.log(view);
-        // console.log(_m);
-        // console.log(_c);
     	if(typeof _c.ioc !== null){
         	var _value = _m.data.value;
             $('#'+_c.ioc).append(_.template(view,{value:_value}));
@@ -650,8 +648,6 @@
     _model.automation = function(auto,_m){
         var _auto = auto.split(','),
             _value = _m.data.value;
-            //console.log(_value);
-            //console.log(_m);
         $.each(_auto,function(_j,_k){
             $.each(_value,function(_i,_v){
                 if(_v.type === _k){

@@ -1,6 +1,6 @@
 kalimdor.config = {
-	style:['reset-min.css','kalimdor.css'],
-	library:['jquery.js','underscore.js'],
+	style:['reset-min','kalimdor'],
+	library:['jquery','underscore'],
 	plug:['dialog','tree','upload','searchSelect','text'],
 	debug:true
 }
