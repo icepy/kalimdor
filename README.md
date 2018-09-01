@@ -1,8 +1,8 @@
-#kalimdor是什么？#
+## kalimdor是什么？#
 
 采用MVC经典软件模式，应用在企业级开发中{财务，报表类企业应用}，专注与后端的数据交互，代码结构控制，三层解耦。
 
-##说明##
+## 说明
 
 <a href="https://github.com/xiangwenwe/kalimdor">kalimdor.js</a>为经典MVC结构，它依赖于LAB.js,jQuery.js,undersocre.js，形成一套在桌面浏览器端的解决方案。
 
@@ -14,7 +14,7 @@
 
 注明：暂时只支持火狐，google浏览器，IE9 现在的demo版本。
 
-##开发时间日志##
+## 开发时间日志
 
 ------2013年------
 
@@ -58,36 +58,41 @@
 
 >增加get，set方法
 
-##如何运行程序##
+## 如何运行程序
+
 程序运行需要的条件：dialog_demo.html为例。
 
-	在dialog_demo页面中，在头部引入核心文件：<script type="text/javascript" src="libs/kalimdor.js"></script>
+```javascript
+在dialog_demo页面中，在头部引入核心文件：<script type="text/javascript" src="libs/kalimdor.js"></script>
 
-	在页面中定义控制器容器：<div id='controllers' ctrl='dialog' style='display:none;'></div>  
+在页面中定义控制器容器：<div id='controllers' ctrl='dialog' style='display:none;'></div>  
+```
 
 容器中，id与ctrl为必填，id必须是controllers，ctrl为任意字符串。
 
 多控制器支持，程序运行条件。
 
-	在页面中定义的控制器容器，ctrl字段以|来分隔。
-	<div id='controllers' ctrl='dialog|dialog2|dialog3' style='display:none;'></div>  
+```javascript
+// 在页面中定义的控制器容器，ctrl字段以|来分隔。
 
+<div id='controllers' ctrl='dialog|dialog2|dialog3' style='display:none;'></div>  
+```
 
-###控制器###
+### 控制器
 
 在controllers文件夹中定义控制器文件，书写内容如下.views为视图文件名，ioc为容器，init为初始化容器。
 
 ```javascript
 kalimdor.controllers.add('',function(){
-	this.views = '';
-	this.ioc = '';
-	this.init = function(){
-		//初始化容器
-	}
+this.views = '';
+this.ioc = '';
+this.init = function(){
+   //初始化容器
+}
 });
 ```
 
-###视图###
+### 视图
 
 注意，如果是服务端取模，则不必定义视图loadStr或loadServer属性。
 
@@ -102,33 +107,34 @@ kalimdor.view.add('',function(){
 })
 ```
 
-###模型###
+### 模型
 
 在models文件夹中定义模型，书写内容如下，data为本地数据，dataServer为服务端取模。
 ```javascript
 kalimdor.model.add('',function(){
-	this.data = {};
-	this.dataServer = '';
+  this.data = {};
+  this.dataServer = '';
 })
 ```
 
-###组件类###
+###组件类
 
-	如何定义组件类：
-	kalimdor.addplug('dialog',function(d,o){
-		this.open = function(){}
-		this.close = function(){}
-	})
+```javascript
+如何定义组件类：
+kalimdor.addplug('dialog',function(d,o){
+  this.open = function(){}
+  this.close = function(){}
+})
 
-	addplug方法为扩展组件类方法，参数第一项：'dialog'为必填项，此为类名。
-	参数：function(d,o){}匿名函数 d为调用初始化时传入的id，o为调用初始化时是传入的配置对象。
+addplug方法为扩展组件类方法，参数第一项：'dialog'为必填项，此为类名。
+参数：function(d,o){}匿名函数 d为调用初始化时传入的id，o为调用初始化时是传入的配置对象。
+```
 
-##API##
+## API
 
-###controllers object###
-
-#####add()#####
-
+### controllers object
+ - add()
+ 
 >add() {参数}namespace callbackClass  添加一个控制器
 
 使用：
@@ -148,7 +154,7 @@ kalimdor.model.add('',function(){
 
 >init 指定初始化函数
 
-#####saveJSON()#####
+- saveJSON()
 
 >saveJSON() 对模型的value进行存储。
 
@@ -156,9 +162,9 @@ kalimdor.model.add('',function(){
 
 	kalimdor.controllers.saveJSON();
 
-###model object###
+### model object
 
-#####add()#####
+- add()
 
 >add() {参数}namespace callbackClass  添加一个模型
 
@@ -184,9 +190,9 @@ kalimdor.model.add('',function(){
 
 注明：创建模型，data或dataServer只能使用其中一个
 
-###view object###
+### view object
 
-#####add()#####
+- add()
 
 >add() {参数}namespace callbackClass  添加一个视图
 
@@ -211,31 +217,28 @@ kalimdor.model.add('',function(){
 
 注明：如果创建视图，只指定了模型，那么将从模型的URL中请求数据。loadStr或loadServer只能使用其中一个。
 
-#####addplug()#####
+- addplug()
 
 >addplug(){参数}namespace callbackClass创建一个组件。
 
-#####get()#####
+- get()
 
 >get() {参数}name 获取某个模型
 
-#####set()#####
+- set()
 
 >set() {参数}name obj 对某个模型进行设置，并更新此模型下的视图。
 
-#####getURL()#####
+- getURL()
 
 >getURL() 获取当前url
 
-###cookie object###
+### cookie object
 
-#####getCookie()#####
+- getCookie()
 
 >getCookie(){参数}name获取cookie value
 
-#####setCookie()#####
+- setCookie()
 
 >setCookie(){参数}name value potions 设置cookie
-
-
-
